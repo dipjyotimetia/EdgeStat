@@ -8,12 +8,12 @@ interface HasHeaders {
 export function requireMasterKey(request: HasHeaders, env: Env): Response | null {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
-    return errorResponse('Missing Authorization header', 401);
+    return errorResponse({ error: 'unauthorized', status: 401 });
   }
 
   const token = authHeader.slice(7);
   if (token !== env.MASTER_KEY) {
-    return errorResponse('Invalid API key', 403);
+    return errorResponse({ error: 'unauthorized', status: 401 });
   }
 
   return null;

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "workspaces": [
+    "packages/schemas",
     "dashboard",
     "sdk",
     "cli"
@@ -23,10 +24,9 @@
     "setup": "npx tsx cli/src/index.ts setup"
   },
   "dependencies": {
+    "@edgestat/schemas": "*",
     "itty-router": "^5.0.23",
-    "openapi-fetch": "^0.17.0",
-    "zod": "^4.3.6",
-    "zod-openapi": "^5.4.6"
+    "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260405.1",

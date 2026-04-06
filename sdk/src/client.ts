@@ -1,32 +1,13 @@
 // EdgeStat TypeScript SDK for server-side and mobile usage
 
+export type { EventPayload, VitalName, EventType } from '@edgestat/schemas/types';
+import type { EventPayload } from '@edgestat/schemas/types';
+
 export interface EdgeStatConfig {
   endpoint: string;
   siteId: string;
   flushInterval?: number;
   maxBatchSize?: number;
-}
-
-/**
- * Event payload for the EdgeStat SDK.
- * IMPORTANT: This interface must stay in sync with `singleEventSchema` in
- * `src/lib/schemas.ts`. All field types and optionality must match.
- * Run `npm run check:schema` from root after changing either.
- */
-export interface EventPayload {
-  type: 'pageview' | 'custom' | 'web_vital' | 'session_start' | 'session_end';
-  url?: string;
-  referrer?: string;
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
-  event_name?: string;
-  event_props?: Record<string, string | number>;
-  vital_name?: 'FCP' | 'LCP' | 'CLS' | 'FID' | 'INP' | 'TTFB';
-  vital_value?: number;
-  screen_width?: number;
-  screen_height?: number;
-  timestamp?: number;
 }
 
 export class EdgeStatClient {

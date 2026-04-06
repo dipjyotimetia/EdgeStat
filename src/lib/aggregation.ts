@@ -1,4 +1,4 @@
-import type { StatsResponse, TimeseriesPoint, PageStats, SourceStats } from './schemas.js';
+import type { StatsResponse, TimeseriesPoint, PageStats, SourceStats } from '@edgestat/schemas';
 
 function dateToTimestamp(date: string): number {
   return new Date(date + 'T00:00:00Z').getTime();

@@ -1,5 +1,5 @@
 import type { Env, AnalyticsEvent, QueueMessage } from '../lib/types.js';
-import { ingestBodySchema } from '../lib/schemas.js';
+import { ingestBodySchema, toParseResult } from '@edgestat/schemas';
 import { generateSessionId, getCurrentSalt } from '../lib/privacy.js';
 import { parseUserAgent } from '../lib/ua-parser.js';
 import { validateSiteApiKey } from '../lib/auth.js';
@@ -14,19 +14,23 @@ export async function handleIngest(request: Request, env: Env): Promise<Response
   try {
     body = await request.json();
   } catch {
-    return errorResponse('Invalid JSON body', 400);
+    return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid JSON body', code: 'invalid_type' }] });
   }
 
-  const parsed = ingestBodySchema.safeParse(body);
-  if (!parsed.success) {
-    return errorResponse('Validation failed', 400, parsed.error.flatten().fieldErrors);
+  const result = toParseResult(ingestBodySchema.safeParse(body));
+  if (!result.success) {
+    return errorResponse({
+      error: 'validation_failed',
+      status: 400,
+      issues: result.issues.map((i) => ({ path: i.path.join('.'), message: i.message, code: i.code })),
+    });
   }
 
-  const { site_id, events } = parsed.data;
+  const { site_id, events } = result.data;
 
   const siteValid = await validateSiteApiKey(env.DB, site_id);
   if (!siteValid) {
-    return errorResponse('Unknown site_id', 404);
+    return errorResponse({ error: 'not_found', status: 404, resource: 'site' });
   }
 
   const ip = request.headers.get('cf-connecting-ip') || '0.0.0.0';

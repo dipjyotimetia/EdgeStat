@@ -1,4 +1,4 @@
-import { openApiDocument } from '../src/lib/schemas.js';
+import { openApiDocument } from '@edgestat/schemas';
 import { writeFileSync } from 'node:fs';
 
 const specPath = './dashboard/src/api/openapi.json';

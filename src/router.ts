@@ -1,6 +1,6 @@
 import { AutoRouter, cors, error } from 'itty-router';
 import type { Env } from './lib/types.js';
-import { openApiDocument } from './lib/schemas.js';
+import { openApiDocument } from '@edgestat/schemas';
 import { handleIngest, handleIngestOptions } from './routes/ingest.js';
 import { handleCreateSite, handleListSites } from './routes/setup.js';
 import {

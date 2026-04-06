@@ -10,6 +10,7 @@ import {
   eventsQuerySchema,
   createFunnelSchema,
   funnelSchema,
+  toParseResult,
   type StatsResponse,
   type TimeseriesResponse,
   type PagesResponse,
@@ -18,7 +19,7 @@ import {
   type RealtimeResponse,
   type FunnelsResponse,
   type CreateFunnelResponse,
-} from '../lib/schemas.js';
+} from '@edgestat/schemas';
 import {
   getOverviewStats,
   getTimeseries,
@@ -44,7 +45,7 @@ export async function handleStats(request: IRequest, env: Env): Promise<Response
   const siteId = getSiteId(request);
   const query = getQuery(request);
   const parsed = dateRangeSchema.safeParse(query.from && query.to ? query : defaultDateRange());
-  if (!parsed.success) return errorResponse('Invalid date range', 400);
+  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid date range', code: 'invalid_type' }] });
 
   const stats: StatsResponse = await getOverviewStats(env.DB, siteId, parsed.data.from, parsed.data.to);
   return jsonResponse(stats);
@@ -57,7 +58,7 @@ export async function handleTimeseries(request: IRequest, env: Env): Promise<Res
   const siteId = getSiteId(request);
   const query = getQuery(request);
   const parsed = timeseriesQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), interval: 'day' });
-  if (!parsed.success) return errorResponse('Invalid query parameters', 400);
+  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid query parameters', code: 'invalid_type' }] });
 
   const data = await getTimeseries(env.DB, siteId, parsed.data.from, parsed.data.to, parsed.data.interval);
   return jsonResponse<TimeseriesResponse>({ data });
@@ -70,7 +71,7 @@ export async function handlePages(request: IRequest, env: Env): Promise<Response
   const siteId = getSiteId(request);
   const query = getQuery(request);
   const parsed = pagesQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), limit: '10' });
-  if (!parsed.success) return errorResponse('Invalid query parameters', 400);
+  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid query parameters', code: 'invalid_type' }] });
 
   const pages = await getTopPages(env.DB, siteId, parsed.data.from, parsed.data.to, parsed.data.limit);
   return jsonResponse<PagesResponse>({ pages });
@@ -83,7 +84,7 @@ export async function handleSources(request: IRequest, env: Env): Promise<Respon
   const siteId = getSiteId(request);
   const query = getQuery(request);
   const parsed = dateRangeSchema.safeParse(query.from && query.to ? query : defaultDateRange());
-  if (!parsed.success) return errorResponse('Invalid date range', 400);
+  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid date range', code: 'invalid_type' }] });
 
   const sources: SourcesResponse = await getTrafficSources(env.DB, siteId, parsed.data.from, parsed.data.to);
   return jsonResponse(sources);
@@ -96,7 +97,7 @@ export async function handleEvents(request: IRequest, env: Env): Promise<Respons
   const siteId = getSiteId(request);
   const query = getQuery(request);
   const parsed = eventsQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), limit: '50' });
-  if (!parsed.success) return errorResponse('Invalid query parameters', 400);
+  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid query parameters', code: 'invalid_type' }] });
 
   const events: EventsResponse = await getCustomEvents(
     env.DB, siteId, parsed.data.from, parsed.data.to, parsed.data.name, parsed.data.limit,
@@ -144,15 +145,19 @@ export async function handleCreateFunnel(request: IRequest, env: Env): Promise<R
   try {
     body = await (request as unknown as Request).json();
   } catch {
-    return errorResponse('Invalid JSON body', 400);
+    return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid JSON body', code: 'invalid_type' }] });
   }
 
-  const parsed = createFunnelSchema.safeParse(body);
-  if (!parsed.success) {
-    return errorResponse('Validation failed', 400, parsed.error.flatten().fieldErrors);
+  const result = toParseResult(createFunnelSchema.safeParse(body));
+  if (!result.success) {
+    return errorResponse({
+      error: 'validation_failed',
+      status: 400,
+      issues: result.issues.map((i) => ({ path: i.path.join('.'), message: i.message, code: i.code })),
+    });
   }
 
-  const { name, steps } = parsed.data;
+  const { name, steps } = result.data;
   const id = generateShortId();
 
   await env.DB

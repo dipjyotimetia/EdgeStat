@@ -12,7 +12,7 @@ export async function handleSSE(
   const url = new URL(request.url);
   const token = url.searchParams.get('token');
   if (!token || token !== env.MASTER_KEY) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    return new Response(JSON.stringify({ error: 'unauthorized', status: 401 }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
     });

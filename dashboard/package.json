@@ -11,6 +11,7 @@
     "generate:openapi": "tsx ../../scripts/generate-openapi.ts && openapi-typescript src/api/openapi.json -o src/api/schema.d.ts"
   },
   "dependencies": {
+    "@edgestat/schemas": "*",
     "@tanstack/react-query": "^5.96.2",
     "clsx": "^2.1.1",
     "openapi-fetch": "^0.17.0",

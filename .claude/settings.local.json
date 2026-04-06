@@ -27,7 +27,11 @@
       "Bash(ls:*)",
       "Bash(npm audit:*)",
       "WebFetch(domain:turborepo.dev)",
-      "WebFetch(domain:turborepo.ai)"
+      "WebFetch(domain:turborepo.ai)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(python3:*)"
     ]
   }
 }

@@ -1,5 +1,6 @@
 import createClient, { type Middleware } from 'openapi-fetch';
 import type { paths, components } from './schema';
+import type { ApiErrorResponse } from '@edgestat/schemas/types';
 
 function getMasterKey(): string {
   return localStorage.getItem('edgestat_master_key') || '';
@@ -18,26 +19,32 @@ api.use(authMiddleware);
 
 // ─── Re-export component types for use in components ────────────────────────
 
-export type Site = components['schemas']['Site'];
-export type StatsData = components['schemas']['StatsResponse'];
+export type Site          = components['schemas']['Site'];
+export type StatsData     = components['schemas']['StatsResponse'];
 export type TimeseriesPoint = components['schemas']['TimeseriesPoint'];
-export type PageData = components['schemas']['PageStats'];
-export type SourceData = components['schemas']['SourceStats'];
-export type EventData = components['schemas']['CustomEvent'];
-export type FunnelData = components['schemas']['Funnel'];
-export type FunnelStep = components['schemas']['FunnelStep'];
+export type PageData      = components['schemas']['PageStats'];
+export type SourceData    = components['schemas']['SourceStats'];
+export type EventData     = components['schemas']['CustomEvent'];
+export type FunnelData    = components['schemas']['Funnel'];
+export type FunnelStep    = components['schemas']['FunnelStep'];
 
-// ─── Helper ─────────────────────────────────────────────────────────────────
+// ─── Re-export shared constants and error types ──────────────────────────────
 
-function unwrap<T>(result: { data?: T; error?: unknown; response: Response }): T {
+export type { ApiErrorResponse, VitalName, EventType } from '@edgestat/schemas/types';
+export { VITAL_NAMES, EVENT_TYPES, INTERVALS } from '@edgestat/schemas/types';
+
+// ─── Helper ──────────────────────────────────────────────────────────────────
+
+function unwrap<T>(result: { data?: T; error?: ApiErrorResponse; response: Response }): T {
   if (result.error || !result.data) {
-    const errObj = result.error as { error?: string } | undefined;
-    throw new Error(errObj?.error ?? `HTTP ${result.response.status}`);
+    const err = result.error;
+    if (err) throw err;
+    throw new Error(`HTTP ${result.response.status}`);
   }
   return result.data;
 }
 
-// ─── Typed API functions ────────────────────────────────────────────────────
+// ─── Typed API functions ──────────────────────────────────────────────────────
 
 export async function listSites() {
   return unwrap(await api.GET('/api/sites'));

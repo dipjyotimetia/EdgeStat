@@ -7,6 +7,9 @@
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@edgestat/schemas": "*"
+  },
   "devDependencies": {
     "esbuild": "^0.24.0",
     "typescript": "^5.7.0"
