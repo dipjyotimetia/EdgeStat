@@ -43,3 +43,23 @@ export function isAlreadyPatched(projectRoot: string): boolean {
   const content = readFileSync(resolve(projectRoot, 'wrangler.jsonc'), 'utf-8');
   return !content.includes(PLACEHOLDER);
 }
+
+/** Replace real resource IDs in wrangler.jsonc back with the placeholder string */
+export function resetWranglerConfig(projectRoot: string): void {
+  const configPath = resolve(projectRoot, 'wrangler.jsonc');
+  let content = readFileSync(configPath, 'utf-8');
+
+  // D1 database_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  content = content.replace(
+    /("database_id"\s*:\s*")[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(")/g,
+    `$1${PLACEHOLDER}$2`,
+  );
+
+  // KV namespace id: 32-char hex
+  content = content.replace(
+    /("id"\s*:\s*")[0-9a-f]{32}(")/g,
+    `$1${PLACEHOLDER}$2`,
+  );
+
+  writeFileSync(configPath, content, 'utf-8');
+}
