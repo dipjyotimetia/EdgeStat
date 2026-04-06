@@ -21,7 +21,19 @@
     "db:migrate:remote": "wrangler d1 migrations apply edgestat-db --remote",
     "types": "wrangler types",
     "typecheck": "turbo run typecheck",
-    "setup": "npm run build --workspace cli && node cli/dist/index.js setup"
+    "setup": "npm run build --workspace cli && node cli/dist/index.js setup",
+    "prepare": "husky",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,json,md,css,html}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@edgestat/schemas": "*",
