@@ -25,14 +25,14 @@ export async function createKV(projectRoot: string, dryRun: boolean): Promise<St
     return { status: 'created', id: kvId };
   } catch (e) {
     if (errorContains(e, 'already exists') || errorContains(e, 'namespace already')) {
-      // Try to extract ID from error
       const idMatch = String(e).match(/([a-f0-9]{32})/);
       if (idMatch) return { status: 'skipped', id: idMatch[1] };
 
       // Fallback: list namespaces
+      // wrangler v4 title is just "KV"; wrangler v3 was "edgestat-KV"
       const listOutput = exec('wrangler kv namespace list', { cwd: projectRoot });
       const namespaces = safeJsonParse<Array<{ id: string; title: string }>>(listOutput);
-      const ns = namespaces.find((n) => n.title.includes('edgestat') && n.title.includes(KV_NAME));
+      const ns = namespaces.find((n) => n.title === KV_NAME || n.title === `edgestat-${KV_NAME}`);
       if (ns) return { status: 'skipped', id: ns.id };
     }
     throw e;
