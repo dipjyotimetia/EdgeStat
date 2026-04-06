@@ -9,7 +9,7 @@ export async function handleListSites(request: Request, env: Env): Promise<Respo
   if (authError) return authError;
 
   const { results } = await env.DB.prepare(
-    'SELECT id, name, domain, api_key, created_at FROM sites ORDER BY created_at DESC',
+    'SELECT id, name, domain, api_key, created_at FROM sites ORDER BY created_at DESC'
   ).all<Site>();
 
   return jsonResponse({ sites: results });
@@ -33,9 +33,9 @@ export async function handleCreateSite(request: Request, env: Env): Promise<Resp
   const id = generateShortId();
   const apiKey = `es_${crypto.randomUUID().replace(/-/g, '')}`;
 
-  await env.DB.prepare(
-    'INSERT INTO sites (id, name, domain, api_key) VALUES (?, ?, ?, ?)',
-  ).bind(id, name, domain, apiKey).run();
+  await env.DB.prepare('INSERT INTO sites (id, name, domain, api_key) VALUES (?, ?, ?, ?)')
+    .bind(id, name, domain, apiKey)
+    .run();
 
   const site: Site = { id, name, domain, api_key: apiKey, created_at: new Date().toISOString() };
   const snippet = `<script defer data-site="${id}" src="https://${domain}/s.js"></script>`;

@@ -12,11 +12,7 @@ export default {
     await handleQueueBatch(batch, env, ctx);
   },
 
-  async scheduled(
-    controller: ScheduledController,
-    env: Env,
-    ctx: ExecutionContext,
-  ): Promise<void> {
+  async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
     await handleScheduled(controller, env, ctx);
   },
 };

@@ -24,7 +24,9 @@ export function SourcesTable({ referrers, utm }: SourcesTableProps) {
             onClick={() => setTab(t)}
             className={clsx(
               'px-5 py-3 text-xs font-mono uppercase tracking-wider transition-colors',
-              tab === t ? 'text-edge-600 border-b-2 border-edge-700' : 'text-edge-700 hover:text-edge-600',
+              tab === t
+                ? 'text-edge-600 border-b-2 border-edge-700'
+                : 'text-edge-700 hover:text-edge-600'
             )}
           >
             {t === 'referrers' ? 'Referrers' : 'UTM Campaigns'}
@@ -35,14 +37,32 @@ export function SourcesTable({ referrers, utm }: SourcesTableProps) {
       <table className="w-full" role="table">
         <thead>
           <tr className="border-b border-edge-800">
-            <th className="text-left text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3" scope="col">Source</th>
-            <th className="text-right text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3" scope="col">Visitors</th>
-            <th className="text-right text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3" scope="col">Pageviews</th>
+            <th
+              className="text-left text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3"
+              scope="col"
+            >
+              Source
+            </th>
+            <th
+              className="text-right text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3"
+              scope="col"
+            >
+              Visitors
+            </th>
+            <th
+              className="text-right text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3"
+              scope="col"
+            >
+              Pageviews
+            </th>
           </tr>
         </thead>
         <tbody>
           {data.map((source) => (
-            <tr key={source.source} className="border-b border-edge-800/30 hover:bg-edge-900/80 transition-colors">
+            <tr
+              key={source.source}
+              className="border-b border-edge-800/30 hover:bg-edge-900/80 transition-colors"
+            >
               <td className="px-5 py-3 relative">
                 <div
                   className="absolute inset-y-0 left-0 bg-edge-800/20 rounded-r"

@@ -1,16 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --color-edge-950: #050B14;
-  --color-edge-900: #0A2540;
-  --color-edge-800: #0D3D30;
-  --color-edge-700: #00D4AA;
-  --color-edge-600: #00FFD1;
-  --color-edge-500: #7FFFD4;
-  --color-edge-400: #E2F9F5;
-  --color-edge-300: #F0FDF9;
-  --color-edge-border: #1E4D44;
-  --color-edge-muted: #1E6B5A;
+  --color-edge-950: #050b14;
+  --color-edge-900: #0a2540;
+  --color-edge-800: #0d3d30;
+  --color-edge-700: #00d4aa;
+  --color-edge-600: #00ffd1;
+  --color-edge-500: #7fffd4;
+  --color-edge-400: #e2f9f5;
+  --color-edge-300: #f0fdf9;
+  --color-edge-border: #1e4d44;
+  --color-edge-muted: #1e6b5a;
   --font-family-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
@@ -42,8 +42,13 @@ body {
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .animate-pulse-dot {

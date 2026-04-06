@@ -15,7 +15,7 @@ interface DeleteStep {
 }
 
 export async function cleanup(options: CleanupOptions) {
-  const force  = options.force  ?? false;
+  const force = options.force ?? false;
   const dryRun = options.dryRun ?? false;
 
   console.log();
@@ -39,7 +39,7 @@ export async function cleanup(options: CleanupOptions) {
 
   note(
     resources.join('\n') + '\n\n' + brand.red('! This operation is irreversible.'),
-    brand.red('Resources to be permanently deleted'),
+    brand.red('Resources to be permanently deleted')
   );
 
   if (!force && !dryRun) {
@@ -64,31 +64,31 @@ export async function cleanup(options: CleanupOptions) {
   const steps: DeleteStep[] = [
     {
       label: `Secret ${RESOURCE_NAMES.secretName}`,
-      cmd:   `wrangler secret delete ${RESOURCE_NAMES.secretName}`,
+      cmd: `wrangler secret delete ${RESOURCE_NAMES.secretName}`,
     },
     {
       label: `Worker ${RESOURCE_NAMES.workerName}`,
-      cmd:   'wrangler delete',
+      cmd: 'wrangler delete',
     },
     {
       label: `Queue ${RESOURCE_NAMES.queues[1]}`,
-      cmd:   `wrangler queues delete ${RESOURCE_NAMES.queues[1]}`,
+      cmd: `wrangler queues delete ${RESOURCE_NAMES.queues[1]}`,
     },
     {
       label: `Queue ${RESOURCE_NAMES.queues[0]}`,
-      cmd:   `wrangler queues delete ${RESOURCE_NAMES.queues[0]}`,
+      cmd: `wrangler queues delete ${RESOURCE_NAMES.queues[0]}`,
     },
     {
       label: `D1 database ${RESOURCE_NAMES.d1Database}`,
-      cmd:   `wrangler d1 delete ${RESOURCE_NAMES.d1Database} -y`,
+      cmd: `wrangler d1 delete ${RESOURCE_NAMES.d1Database} -y`,
     },
     {
       label: `KV namespace ${RESOURCE_NAMES.kvNamespace}`,
-      cmd:   `wrangler kv namespace delete --binding ${BINDINGS.kv} -y`,
+      cmd: `wrangler kv namespace delete --binding ${BINDINGS.kv} -y`,
     },
     {
       label: `R2 bucket ${RESOURCE_NAMES.r2Bucket}`,
-      cmd:   `wrangler r2 bucket delete ${RESOURCE_NAMES.r2Bucket}`,
+      cmd: `wrangler r2 bucket delete ${RESOURCE_NAMES.r2Bucket}`,
     },
   ];
 
@@ -106,10 +106,13 @@ export async function cleanup(options: CleanupOptions) {
       s.stop(`${brand.teal('✓')} ${step.label} deleted`);
     } catch (e) {
       // Silently skip resources that don't exist
-      if (errorContains(e, 'not found') ||
-          errorContains(e, 'does not exist') ||
-          errorContains(e, '10007') ||   // Worker not found
-          errorContains(e, '10006')) {   // Resource not found
+      if (
+        errorContains(e, 'not found') ||
+        errorContains(e, 'does not exist') ||
+        errorContains(e, '10007') || // Worker not found
+        errorContains(e, '10006')
+      ) {
+        // Resource not found
         s.stop(`${brand.teal('✓')} ${step.label} ${brand.dim('(not found, skipped)')}`);
         continue;
       }
@@ -119,7 +122,7 @@ export async function cleanup(options: CleanupOptions) {
         allOk = false;
         s.stop(`${brand.red('✗')} ${step.label} failed — bucket is not empty`);
         log.error(
-          `Empty the bucket first:\n  wrangler r2 object delete ${RESOURCE_NAMES.r2Bucket} --recursive`,
+          `Empty the bucket first:\n  wrangler r2 object delete ${RESOURCE_NAMES.r2Bucket} --recursive`
         );
         continue;
       }

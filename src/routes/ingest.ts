@@ -3,7 +3,12 @@ import { ingestBodySchema, toParseResult } from '@edgestat/schemas';
 import { generateSessionId, getCurrentSalt } from '../lib/privacy.js';
 import { parseUserAgent } from '../lib/ua-parser.js';
 import { validateSiteApiKey } from '../lib/auth.js';
-import { jsonResponse, errorResponse, validationErrorResponse, invalidJsonBodyResponse } from '../lib/response.js';
+import {
+  jsonResponse,
+  errorResponse,
+  validationErrorResponse,
+  invalidJsonBodyResponse,
+} from '../lib/response.js';
 
 export async function handleIngestOptions(): Promise<Response> {
   return new Response(null, { status: 204 });

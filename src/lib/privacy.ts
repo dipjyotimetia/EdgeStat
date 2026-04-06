@@ -1,5 +1,3 @@
-import type { Env } from './types.js';
-
 const SALT_KEY = 'salt:current';
 const SALT_PREVIOUS_KEY = 'salt:previous';
 
@@ -18,7 +16,7 @@ export function stripIpLastOctet(ip: string): string {
 export async function generateSessionId(
   ip: string,
   userAgent: string,
-  salt: string,
+  salt: string
 ): Promise<string> {
   const strippedIp = stripIpLastOctet(ip);
   const data = `${strippedIp}|${userAgent}|${salt}`;

@@ -24,7 +24,8 @@ const { preflight, corsify } = cors({
 const router = AutoRouter({
   before: [preflight],
   after: [corsify],
-  catch: (err) => error(500, { error: err instanceof Error ? err.message : 'Internal Server Error' }),
+  catch: (err) =>
+    error(500, { error: err instanceof Error ? err.message : 'Internal Server Error' }),
 });
 
 // ─── OpenAPI spec (JSON) ────────────────────────────────────────────────────

@@ -66,10 +66,7 @@ export function AreaChart({ data, dataKey = 'visitors' }: AreaChartProps) {
             width="auto"
           />
           {/* v3: animationDuration respects prefers-reduced-motion via 'auto' */}
-          <Tooltip
-            {...TOOLTIP_STYLE}
-            animationDuration={ANIMATION_PROPS.animationDuration}
-          />
+          <Tooltip {...TOOLTIP_STYLE} animationDuration={ANIMATION_PROPS.animationDuration} />
           <Area<ChartDataPoint>
             type="monotone"
             dataKey={dataKey}

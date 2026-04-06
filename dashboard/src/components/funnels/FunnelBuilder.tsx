@@ -27,7 +27,10 @@ export function FunnelBuilder({ siteId }: FunnelBuilderProps) {
       queryClient.invalidateQueries({ queryKey: ['funnels', siteId] });
       setIsCreating(false);
       setName('');
-      setSteps([{ name: 'Step 1', type: 'url', value: '' }, { name: 'Step 2', type: 'url', value: '' }]);
+      setSteps([
+        { name: 'Step 1', type: 'url', value: '' },
+        { name: 'Step 2', type: 'url', value: '' },
+      ]);
     },
   });
 
@@ -72,7 +75,9 @@ export function FunnelBuilder({ siteId }: FunnelBuilderProps) {
                   <span className="text-sm font-mono text-edge-500">{step.value || step.name}</span>
                 </div>
                 {i < funnel.steps.length - 1 && (
-                  <span className="text-edge-700" aria-hidden="true">&#8594;</span>
+                  <span className="text-edge-700" aria-hidden="true">
+                    &#8594;
+                  </span>
                 )}
               </div>
             ))}
@@ -112,7 +117,9 @@ export function FunnelBuilder({ siteId }: FunnelBuilderProps) {
                   dragIdx === idx ? 'border-edge-700 opacity-50' : 'border-edge-800'
                 } cursor-grab active:cursor-grabbing`}
               >
-                <span className="text-edge-muted text-sm cursor-grab" aria-hidden="true">&#9776;</span>
+                <span className="text-edge-muted text-sm cursor-grab" aria-hidden="true">
+                  &#9776;
+                </span>
                 <span className="text-xs font-mono text-edge-700 w-6">{idx + 1}.</span>
                 <select
                   value={step.type}

@@ -3,7 +3,7 @@ import type { Env, AnalyticsEvent, QueueMessage } from '../lib/types.js';
 export async function handleQueueBatch(
   batch: MessageBatch<QueueMessage>,
   env: Env,
-  ctx: ExecutionContext,
+  ctx: ExecutionContext
 ): Promise<void> {
   // Process each message individually to correctly ack/retry
   for (const msg of batch.messages) {
@@ -21,7 +21,7 @@ export async function handleQueueBatch(
             site_id, type, url, referrer, utm_source, utm_medium, utm_campaign,
             device_type, browser, country, screen_width, screen_height,
             event_name, event_props, vital_name, vital_value, session_id, timestamp
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         ).bind(
           e.site_id,
           e.type,
@@ -40,8 +40,8 @@ export async function handleQueueBatch(
           e.vital_name || null,
           e.vital_value ?? null,
           e.session_id || null,
-          e.timestamp,
-        ),
+          e.timestamp
+        )
       );
 
       // D1 batch is transactional - process in chunks of 100

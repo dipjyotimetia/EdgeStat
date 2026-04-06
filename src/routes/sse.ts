@@ -4,10 +4,7 @@ import type { IRequest } from 'itty-router';
 
 // Bug #8 fix: EventSource can't send custom headers, so accept token as query param
 // Bug #5 fix: Workers support streaming SSE via ReadableStream with pull-based approach
-export async function handleSSE(
-  request: IRequest,
-  env: Env,
-): Promise<Response> {
+export async function handleSSE(request: IRequest, env: Env): Promise<Response> {
   // Auth via query param (EventSource doesn't support custom headers)
   const url = new URL(request.url);
   const token = url.searchParams.get('token');

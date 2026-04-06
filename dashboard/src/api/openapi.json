@@ -16,9 +16,7 @@
       "post": {
         "operationId": "ingestEvents",
         "summary": "Ingest analytics events",
-        "tags": [
-          "Ingest"
-        ],
+        "tags": ["Ingest"],
         "requestBody": {
           "required": true,
           "content": {
@@ -77,9 +75,7 @@
       "get": {
         "operationId": "listSites",
         "summary": "List all sites",
-        "tags": [
-          "Sites"
-        ],
+        "tags": ["Sites"],
         "security": [
           {
             "BearerAuth": []
@@ -121,9 +117,7 @@
       "post": {
         "operationId": "createSite",
         "summary": "Create a new site",
-        "tags": [
-          "Sites"
-        ],
+        "tags": ["Sites"],
         "security": [
           {
             "BearerAuth": []
@@ -187,9 +181,7 @@
       "get": {
         "operationId": "getStats",
         "summary": "Overview statistics",
-        "tags": [
-          "Analytics"
-        ],
+        "tags": ["Analytics"],
         "security": [
           {
             "BearerAuth": []
@@ -267,9 +259,7 @@
       "get": {
         "operationId": "getTimeseries",
         "summary": "Time-bucketed breakdown",
-        "tags": [
-          "Analytics"
-        ],
+        "tags": ["Analytics"],
         "security": [
           {
             "BearerAuth": []
@@ -303,10 +293,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "hour",
-                "day"
-              ]
+              "enum": ["hour", "day"]
             }
           }
         ],
@@ -348,9 +335,7 @@
       "get": {
         "operationId": "getPages",
         "summary": "Top pages",
-        "tags": [
-          "Analytics"
-        ],
+        "tags": ["Analytics"],
         "security": [
           {
             "BearerAuth": []
@@ -425,9 +410,7 @@
       "get": {
         "operationId": "getSources",
         "summary": "Traffic sources",
-        "tags": [
-          "Analytics"
-        ],
+        "tags": ["Analytics"],
         "security": [
           {
             "BearerAuth": []
@@ -495,9 +478,7 @@
       "get": {
         "operationId": "getEvents",
         "summary": "Custom events",
-        "tags": [
-          "Analytics"
-        ],
+        "tags": ["Analytics"],
         "security": [
           {
             "BearerAuth": []
@@ -579,9 +560,7 @@
       "get": {
         "operationId": "getRealtime",
         "summary": "Active visitors",
-        "tags": [
-          "Analytics"
-        ],
+        "tags": ["Analytics"],
         "security": [
           {
             "BearerAuth": []
@@ -635,9 +614,7 @@
       "get": {
         "operationId": "listFunnels",
         "summary": "List funnels",
-        "tags": [
-          "Funnels"
-        ],
+        "tags": ["Funnels"],
         "security": [
           {
             "BearerAuth": []
@@ -689,9 +666,7 @@
       "post": {
         "operationId": "createFunnel",
         "summary": "Create funnel",
-        "tags": [
-          "Funnels"
-        ],
+        "tags": ["Funnels"],
         "security": [
           {
             "BearerAuth": []
@@ -781,10 +756,7 @@
             }
           }
         },
-        "required": [
-          "site_id",
-          "events"
-        ],
+        "required": ["site_id", "events"],
         "additionalProperties": false,
         "description": "Batch of events to ingest"
       },
@@ -793,13 +765,7 @@
         "properties": {
           "type": {
             "type": "string",
-            "enum": [
-              "pageview",
-              "session_start",
-              "session_end",
-              "custom",
-              "web_vital"
-            ]
+            "enum": ["pageview", "session_start", "session_end", "custom", "web_vital"]
           },
           "url": {
             "type": "string",
@@ -855,14 +821,7 @@
           },
           "vital_name": {
             "type": "string",
-            "enum": [
-              "FCP",
-              "LCP",
-              "CLS",
-              "FID",
-              "INP",
-              "TTFB"
-            ]
+            "enum": ["FCP", "LCP", "CLS", "FID", "INP", "TTFB"]
           },
           "vital_value": {
             "type": "number"
@@ -873,9 +832,7 @@
             "maximum": 9007199254740991
           }
         },
-        "required": [
-          "type"
-        ],
+        "required": ["type"],
         "additionalProperties": false,
         "description": "A single analytics event"
       },
@@ -893,10 +850,7 @@
             "maxLength": 256
           }
         },
-        "required": [
-          "name",
-          "domain"
-        ],
+        "required": ["name", "domain"],
         "additionalProperties": false
       },
       "CreateFunnelBody": {
@@ -921,10 +875,7 @@
                 },
                 "type": {
                   "type": "string",
-                  "enum": [
-                    "url",
-                    "event"
-                  ]
+                  "enum": ["url", "event"]
                 },
                 "value": {
                   "type": "string",
@@ -932,19 +883,12 @@
                   "maxLength": 512
                 }
               },
-              "required": [
-                "name",
-                "type",
-                "value"
-              ],
+              "required": ["name", "type", "value"],
               "additionalProperties": false
             }
           }
         },
-        "required": [
-          "name",
-          "steps"
-        ],
+        "required": ["name", "steps"],
         "additionalProperties": false
       },
       "IngestResponse": {
@@ -956,9 +900,7 @@
             "maximum": 9007199254740991
           }
         },
-        "required": [
-          "queued"
-        ],
+        "required": ["queued"],
         "additionalProperties": false
       },
       "ValidationErrorResponse": {
@@ -987,20 +929,12 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "path",
-                "message",
-                "code"
-              ],
+              "required": ["path", "message", "code"],
               "additionalProperties": false
             }
           }
         },
-        "required": [
-          "error",
-          "status",
-          "issues"
-        ],
+        "required": ["error", "status", "issues"],
         "additionalProperties": false
       },
       "NotFoundErrorResponse": {
@@ -1018,10 +952,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "error",
-          "status"
-        ],
+        "required": ["error", "status"],
         "additionalProperties": false
       },
       "ServerErrorResponse": {
@@ -1036,10 +967,7 @@
             "const": 500
           }
         },
-        "required": [
-          "error",
-          "status"
-        ],
+        "required": ["error", "status"],
         "additionalProperties": false
       },
       "ListSitesResponse": {
@@ -1052,9 +980,7 @@
             }
           }
         },
-        "required": [
-          "sites"
-        ],
+        "required": ["sites"],
         "additionalProperties": false
       },
       "Site": {
@@ -1076,13 +1002,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "domain",
-          "api_key",
-          "created_at"
-        ],
+        "required": ["id", "name", "domain", "api_key", "created_at"],
         "additionalProperties": false
       },
       "UnauthorizedErrorResponse": {
@@ -1097,10 +1017,7 @@
             "const": 401
           }
         },
-        "required": [
-          "error",
-          "status"
-        ],
+        "required": ["error", "status"],
         "additionalProperties": false
       },
       "CreateSiteResponse": {
@@ -1113,10 +1030,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "site",
-          "snippet"
-        ],
+        "required": ["site", "snippet"],
         "additionalProperties": false
       },
       "StatsResponse": {
@@ -1173,9 +1087,7 @@
             }
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "additionalProperties": false
       },
       "TimeseriesPoint": {
@@ -1195,11 +1107,7 @@
             "maximum": 9007199254740991
           }
         },
-        "required": [
-          "bucket",
-          "visitors",
-          "pageviews"
-        ],
+        "required": ["bucket", "visitors", "pageviews"],
         "additionalProperties": false
       },
       "PagesResponse": {
@@ -1212,9 +1120,7 @@
             }
           }
         },
-        "required": [
-          "pages"
-        ],
+        "required": ["pages"],
         "additionalProperties": false
       },
       "PageStats": {
@@ -1237,12 +1143,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "url",
-          "views",
-          "visitors",
-          "avg_time"
-        ],
+        "required": ["url", "views", "visitors", "avg_time"],
         "additionalProperties": false
       },
       "SourcesResponse": {
@@ -1261,10 +1162,7 @@
             }
           }
         },
-        "required": [
-          "referrers",
-          "utm"
-        ],
+        "required": ["referrers", "utm"],
         "additionalProperties": false
       },
       "SourceStats": {
@@ -1284,11 +1182,7 @@
             "maximum": 9007199254740991
           }
         },
-        "required": [
-          "source",
-          "visitors",
-          "pageviews"
-        ],
+        "required": ["source", "visitors", "pageviews"],
         "additionalProperties": false
       },
       "EventsResponse": {
@@ -1301,9 +1195,7 @@
             }
           }
         },
-        "required": [
-          "events"
-        ],
+        "required": ["events"],
         "additionalProperties": false
       },
       "CustomEvent": {
@@ -1334,11 +1226,7 @@
             }
           }
         },
-        "required": [
-          "event_name",
-          "count",
-          "properties"
-        ],
+        "required": ["event_name", "count", "properties"],
         "additionalProperties": false
       },
       "RealtimeResponse": {
@@ -1350,9 +1238,7 @@
             "maximum": 9007199254740991
           }
         },
-        "required": [
-          "active"
-        ],
+        "required": ["active"],
         "additionalProperties": false
       },
       "FunnelsResponse": {
@@ -1365,9 +1251,7 @@
             }
           }
         },
-        "required": [
-          "funnels"
-        ],
+        "required": ["funnels"],
         "additionalProperties": false
       },
       "Funnel": {
@@ -1389,11 +1273,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "steps"
-        ],
+        "required": ["id", "name", "steps"],
         "additionalProperties": false
       },
       "FunnelStep": {
@@ -1404,20 +1284,13 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "url",
-              "event"
-            ]
+            "enum": ["url", "event"]
           },
           "value": {
             "type": "string"
           }
         },
-        "required": [
-          "name",
-          "type",
-          "value"
-        ],
+        "required": ["name", "type", "value"],
         "additionalProperties": false
       },
       "CreateFunnelResponse": {
@@ -1436,11 +1309,7 @@
             }
           }
         },
-        "required": [
-          "id",
-          "name",
-          "steps"
-        ],
+        "required": ["id", "name", "steps"],
         "additionalProperties": false
       }
     },

@@ -62,7 +62,9 @@ export function DateRangePicker({ from, to, onChange }: DateRangePickerProps) {
           {/* Custom range */}
           <div className="space-y-3">
             <div>
-              <label htmlFor="date-from" className="block text-xs font-mono text-edge-700 mb-1">From</label>
+              <label htmlFor="date-from" className="block text-xs font-mono text-edge-700 mb-1">
+                From
+              </label>
               <input
                 id="date-from"
                 type="date"
@@ -73,7 +75,9 @@ export function DateRangePicker({ from, to, onChange }: DateRangePickerProps) {
               />
             </div>
             <div>
-              <label htmlFor="date-to" className="block text-xs font-mono text-edge-700 mb-1">To</label>
+              <label htmlFor="date-to" className="block text-xs font-mono text-edge-700 mb-1">
+                To
+              </label>
               <input
                 id="date-to"
                 type="date"

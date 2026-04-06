@@ -108,11 +108,7 @@ Visit your Worker URL. The onboarding wizard will guide you through:
 Add to your website's `<head>`:
 
 ```html
-<script
-  defer
-  data-site="YOUR_SITE_ID"
-  src="https://your-worker.workers.dev/s.js"
-></script>
+<script defer data-site="YOUR_SITE_ID" src="https://your-worker.workers.dev/s.js"></script>
 ```
 
 **902 bytes gzipped.** Auto-tracks:
@@ -130,15 +126,15 @@ npm install edgestat-sdk
 ```
 
 ```typescript
-import { EdgeStatClient } from "edgestat-sdk";
+import { EdgeStatClient } from 'edgestat-sdk';
 
 const client = new EdgeStatClient({
-  endpoint: "https://your-worker.workers.dev",
-  siteId: "YOUR_SITE_ID",
+  endpoint: 'https://your-worker.workers.dev',
+  siteId: 'YOUR_SITE_ID',
 });
 
-client.trackPageview("/dashboard");
-client.trackEvent("purchase", { amount: 49.99, plan: "pro" });
+client.trackPageview('/dashboard');
+client.trackEvent('purchase', { amount: 49.99, plan: 'pro' });
 
 // Flush on shutdown
 await client.flush();
@@ -217,21 +213,21 @@ The dashboard dev server proxies `/v1`, `/api`, and `/sse` to the Worker at
 
 [![CI](https://github.com/dipjyotimetia/EdgeStat/actions/workflows/ci.yml/badge.svg)](https://github.com/dipjyotimetia/EdgeStat/actions/workflows/ci.yml)
 
-| Workflow | Trigger | What it does |
-|----------|---------|--------------|
-| **CI** | Every push and PR | Typechecks and builds all packages |
-| **Deploy Worker** | Push to `main` | Deploys the Cloudflare Worker via Wrangler |
-| **Publish SDK** | GitHub Release published | Publishes `edgestat-sdk` to npm |
+| Workflow          | Trigger                  | What it does                               |
+| ----------------- | ------------------------ | ------------------------------------------ |
+| **CI**            | Every push and PR        | Typechecks and builds all packages         |
+| **Deploy Worker** | Push to `main`           | Deploys the Cloudflare Worker via Wrangler |
+| **Publish SDK**   | GitHub Release published | Publishes `edgestat-sdk` to npm            |
 
 ### Required Secrets
 
 Set these in **GitHub → Settings → Secrets and variables → Actions**:
 
-| Secret | Used by | How to get it |
-|--------|---------|---------------|
-| `CLOUDFLARE_API_TOKEN` | Deploy Worker | Cloudflare dashboard → My Profile → API Tokens |
-| `CLOUDFLARE_ACCOUNT_ID` | Deploy Worker | Cloudflare dashboard → right sidebar |
-| `NPM_TOKEN` | Publish SDK | npmjs.com → Access Tokens → Automation token |
+| Secret                  | Used by       | How to get it                                  |
+| ----------------------- | ------------- | ---------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Deploy Worker | Cloudflare dashboard → My Profile → API Tokens |
+| `CLOUDFLARE_ACCOUNT_ID` | Deploy Worker | Cloudflare dashboard → right sidebar           |
+| `NPM_TOKEN`             | Publish SDK   | npmjs.com → Access Tokens → Automation token   |
 
 ## Project Structure
 

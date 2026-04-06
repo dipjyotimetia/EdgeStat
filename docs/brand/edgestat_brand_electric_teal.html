@@ -1,360 +1,1395 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edgestat — Brand Kit · Electric Teal</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --es-void:    #050B14;
-      --es-deep:    #0A2540;
-      --es-surface: #0D3D30;
-      --es-teal:    #00D4AA;
-      --es-mint:    #00FFD1;
-      --es-aqua:    #7FFFD4;
-      --es-mist:    #E2F9F5;
-      --es-dim:     #1E4D44;
-      --es-label:   #1E6B5A;
-      --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
-    }
-    body {
-      background: var(--es-void);
-      color: var(--es-mist);
-      font-family: var(--font-mono);
-      padding: 48px 40px;
-      max-width: 900px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 0.5px solid var(--es-surface); }
-    .header-text .name { font-size: 28px; font-weight: 700; color: var(--es-mist); letter-spacing: -0.5px; }
-    .header-text .name span { font-weight: 300; color: var(--es-teal); }
-    .header-text .sub { font-size: 12px; color: var(--es-label); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; }
-    .section { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--es-label); margin: 2rem 0 0.75rem; }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; align-items: flex-end; }
-    .chip { background: var(--es-deep); border: 0.5px solid var(--es-surface); border-radius: 12px; padding: 1.25rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .chip-label { font-size: 11px; color: var(--es-label); }
-    .chip-light { background: #e8f8f4; border: 0.5px solid #b0e8dc; border-radius: 12px; padding: 1.25rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .chip-label-light { font-size: 11px; color: #00a080; }
-    .swatch-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .sw { border-radius: 10px; width: 80px; height: 72px; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; }
-    .sw .sw-name { font-size: 11px; font-weight: 500; margin-bottom: 2px; }
-    .sw .sw-hex  { font-size: 9px; }
-    .scale-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; background: var(--es-void); border: 0.5px solid var(--es-surface); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-    .scale-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .scale-item span { font-size: 10px; color: var(--es-label); }
-    .wm-block { background: var(--es-deep); border: 0.5px solid var(--es-surface); border-radius: 12px; padding: 1.25rem; margin-bottom: 12px; }
-    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .stat-box { background: var(--es-deep); border: 0.5px solid var(--es-surface); border-radius: 8px; padding: 14px; }
-    .stat-lbl { font-size: 10px; color: var(--es-label); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-    .stat-val { font-size: 22px; font-weight: 700; color: var(--es-mint); }
-    .stat-delta { font-size: 10px; color: var(--es-teal); margin-top: 4px; }
-    .nav-bar { background: var(--es-deep); border-radius: 12px 12px 0 0; padding: 12px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid var(--es-surface); }
-    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--es-mint); }
-    .dashboard-wrap { border-radius: 12px; overflow: hidden; border: 0.5px solid var(--es-surface); margin-bottom: 16px; }
-    .dashboard-body { background: var(--es-void); padding: 16px 20px; }
-    .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--es-void); border: 0.5px solid var(--es-surface); border-radius: 99px; padding: 4px 12px; }
-    .badge-text { font-size: 12px; font-weight: 600; color: var(--es-aqua); }
-    .badge-text span { color: var(--es-mint); }
-    .pill { background: var(--es-deep); color: var(--es-teal); font-size: 11px; padding: 4px 12px; border-radius: 99px; border: 0.5px solid var(--es-dim); }
-    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .cli-block { background: var(--es-void); border: 0.5px solid var(--es-surface); border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 2; }
-    .cli-block .prompt { color: var(--es-label); }
-    .cli-block .cmd { color: var(--es-mist); }
-    .cli-block .ok { color: var(--es-teal); }
-    .cli-block .info { color: var(--es-aqua); }
-    .cli-block .url { color: var(--es-mint); }
-    .usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-    .usage-card { background: var(--es-deep); border: 0.5px solid var(--es-surface); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 10px; }
-    .usage-label { font-size: 10px; color: var(--es-label); text-transform: uppercase; letter-spacing: 0.08em; }
-    .token-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
-    .token-table td { padding: 10px 14px; border-bottom: 0.5px solid var(--es-surface); }
-    .token-table td:first-child { color: var(--es-mint); width: 180px; }
-    .token-table td:nth-child(2) { color: var(--es-teal); width: 110px; }
-    .token-table td:last-child { color: var(--es-label); }
-    .token-table tr:last-child td { border-bottom: none; }
-    .token-wrap { background: var(--es-deep); border: 0.5px solid var(--es-surface); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
-    .tagline-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .tagline-table td { padding: 10px 14px; border-bottom: 0.5px solid var(--es-surface); }
-    .tagline-table tr:last-child td { border-bottom: none; }
-    .tagline-table .recommended { background: var(--es-surface); color: var(--es-mint); font-size: 10px; padding: 2px 8px; border-radius: 99px; }
-    .tagline-wrap { background: var(--es-deep); border: 0.5px solid var(--es-surface); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
-    .footer { margin-top: 48px; padding-top: 24px; border-top: 0.5px solid var(--es-surface); font-size: 11px; color: var(--es-label); display: flex; justify-content: space-between; }
-    @media (max-width: 600px) {
-      body { padding: 24px 16px; }
-      .stat-grid { grid-template-columns: 1fr 1fr; }
-      .usage-grid { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Header -->
-  <div class="header">
-    <svg width="56" height="56" viewBox="0 0 72 72" fill="none">
-      <rect width="72" height="72" rx="16" fill="#0A2540"/>
-      <polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/>
-      <line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/>
-      <line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-      <line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-      <line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <div class="header-text">
-      <div class="name">edge<span>stat</span></div>
-      <div class="sub">Brand Kit · Electric Teal</div>
-    </div>
-  </div>
-
-  <!-- Icon variants -->
-  <div class="section">Primary icon</div>
-  <div class="row">
-    <div class="chip">
-      <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
-        <rect width="72" height="72" rx="16" fill="#0A2540"/>
-        <polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/>
-        <line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edgestat — Brand Kit · Electric Teal</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --es-void: #050b14;
+        --es-deep: #0a2540;
+        --es-surface: #0d3d30;
+        --es-teal: #00d4aa;
+        --es-mint: #00ffd1;
+        --es-aqua: #7fffd4;
+        --es-mist: #e2f9f5;
+        --es-dim: #1e4d44;
+        --es-label: #1e6b5a;
+        --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      }
+      body {
+        background: var(--es-void);
+        color: var(--es-mist);
+        font-family: var(--font-mono);
+        padding: 48px 40px;
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 48px;
+        padding-bottom: 24px;
+        border-bottom: 0.5px solid var(--es-surface);
+      }
+      .header-text .name {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--es-mist);
+        letter-spacing: -0.5px;
+      }
+      .header-text .name span {
+        font-weight: 300;
+        color: var(--es-teal);
+      }
+      .header-text .sub {
+        font-size: 12px;
+        color: var(--es-label);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .section {
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--es-label);
+        margin: 2rem 0 0.75rem;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        align-items: flex-end;
+      }
+      .chip {
+        background: var(--es-deep);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 12px;
+        padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .chip-label {
+        font-size: 11px;
+        color: var(--es-label);
+      }
+      .chip-light {
+        background: #e8f8f4;
+        border: 0.5px solid #b0e8dc;
+        border-radius: 12px;
+        padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .chip-label-light {
+        font-size: 11px;
+        color: #00a080;
+      }
+      .swatch-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .sw {
+        border-radius: 10px;
+        width: 80px;
+        height: 72px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 8px;
+      }
+      .sw .sw-name {
+        font-size: 11px;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+      .sw .sw-hex {
+        font-size: 9px;
+      }
+      .scale-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        background: var(--es-void);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .scale-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+      .scale-item span {
+        font-size: 10px;
+        color: var(--es-label);
+      }
+      .wm-block {
+        background: var(--es-deep);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 12px;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .stat-box {
+        background: var(--es-deep);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 8px;
+        padding: 14px;
+      }
+      .stat-lbl {
+        font-size: 10px;
+        color: var(--es-label);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .stat-val {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--es-mint);
+      }
+      .stat-delta {
+        font-size: 10px;
+        color: var(--es-teal);
+        margin-top: 4px;
+      }
+      .nav-bar {
+        background: var(--es-deep);
+        border-radius: 12px 12px 0 0;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 0.5px solid var(--es-surface);
+      }
+      .live-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--es-mint);
+      }
+      .dashboard-wrap {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 0.5px solid var(--es-surface);
+        margin-bottom: 16px;
+      }
+      .dashboard-body {
+        background: var(--es-void);
+        padding: 16px 20px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--es-void);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 99px;
+        padding: 4px 12px;
+      }
+      .badge-text {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--es-aqua);
+      }
+      .badge-text span {
+        color: var(--es-mint);
+      }
+      .pill {
+        background: var(--es-deep);
+        color: var(--es-teal);
+        font-size: 11px;
+        padding: 4px 12px;
+        border-radius: 99px;
+        border: 0.5px solid var(--es-dim);
+      }
+      .pill-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .cli-block {
+        background: var(--es-void);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 8px;
+        padding: 14px 16px;
+        font-size: 13px;
+        line-height: 2;
+      }
+      .cli-block .prompt {
+        color: var(--es-label);
+      }
+      .cli-block .cmd {
+        color: var(--es-mist);
+      }
+      .cli-block .ok {
+        color: var(--es-teal);
+      }
+      .cli-block .info {
+        color: var(--es-aqua);
+      }
+      .cli-block .url {
+        color: var(--es-mint);
+      }
+      .usage-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .usage-card {
+        background: var(--es-deep);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .usage-label {
+        font-size: 10px;
+        color: var(--es-label);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .token-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-bottom: 16px;
+      }
+      .token-table td {
+        padding: 10px 14px;
+        border-bottom: 0.5px solid var(--es-surface);
+      }
+      .token-table td:first-child {
+        color: var(--es-mint);
+        width: 180px;
+      }
+      .token-table td:nth-child(2) {
+        color: var(--es-teal);
+        width: 110px;
+      }
+      .token-table td:last-child {
+        color: var(--es-label);
+      }
+      .token-table tr:last-child td {
+        border-bottom: none;
+      }
+      .token-wrap {
+        background: var(--es-deep);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+      .tagline-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .tagline-table td {
+        padding: 10px 14px;
+        border-bottom: 0.5px solid var(--es-surface);
+      }
+      .tagline-table tr:last-child td {
+        border-bottom: none;
+      }
+      .tagline-table .recommended {
+        background: var(--es-surface);
+        color: var(--es-mint);
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 99px;
+      }
+      .tagline-wrap {
+        background: var(--es-deep);
+        border: 0.5px solid var(--es-surface);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+      .footer {
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 0.5px solid var(--es-surface);
+        font-size: 11px;
+        color: var(--es-label);
+        display: flex;
+        justify-content: space-between;
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 24px 16px;
+        }
+        .stat-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .usage-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <svg width="56" height="56" viewBox="0 0 72 72" fill="none">
+        <rect width="72" height="72" rx="16" fill="#0A2540" />
+        <polygon
+          points="36,12 60,25 60,49 36,60 12,49 12,25"
+          fill="none"
+          stroke="#00D4AA"
+          stroke-width="1.5"
+        />
+        <line
+          x1="36"
+          y1="24"
+          x2="36"
+          y2="47"
+          stroke="#00FFD1"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="26"
+          y1="31"
+          x2="26"
+          y2="47"
+          stroke="#00D4AA"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="46"
+          y1="37"
+          x2="46"
+          y2="47"
+          stroke="#00D4AA"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="18"
+          y1="47"
+          x2="54"
+          y2="47"
+          stroke="#1E4D44"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
       </svg>
-      <span class="chip-label">dark bg</span>
+      <div class="header-text">
+        <div class="name">edge<span>stat</span></div>
+        <div class="sub">Brand Kit · Electric Teal</div>
+      </div>
     </div>
-    <div class="chip-light">
-      <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
-        <rect width="72" height="72" rx="16" fill="#E2F9F5"/>
-        <polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/>
-        <line x1="36" y1="24" x2="36" y2="47" stroke="#0A2540" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="18" y1="47" x2="54" y2="47" stroke="#00D4AA" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Icon variants -->
+    <div class="section">Primary icon</div>
+    <div class="row">
+      <div class="chip">
+        <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="chip-label">dark bg</span>
+      </div>
+      <div class="chip-light">
+        <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#E2F9F5" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#0A2540"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="chip-label-light">light bg</span>
+      </div>
+      <div class="chip">
+        <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="chip-label">transparent</span>
+      </div>
+      <div class="chip">
+        <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            opacity="0.4"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#ffffff"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#ffffff"
+            stroke-width="3.5"
+            stroke-linecap="round"
+            opacity="0.6"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#ffffff"
+            stroke-width="3.5"
+            stroke-linecap="round"
+            opacity="0.6"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#ffffff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity="0.2"
+          />
+        </svg>
+        <span class="chip-label">mono white</span>
+      </div>
+    </div>
+
+    <!-- Wordmarks -->
+    <div class="section">Wordmark</div>
+    <div class="wm-block" style="margin-bottom: 8px">
+      <svg width="100%" height="52" viewBox="0 0 460 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#0A2540" />
+        <polygon
+          points="26,9 43,18 43,34 26,43 9,34 9,18"
+          fill="none"
+          stroke="#00D4AA"
+          stroke-width="1.2"
+        />
+        <line
+          x1="26"
+          y1="17"
+          x2="26"
+          y2="33"
+          stroke="#00FFD1"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="20"
+          y1="21"
+          x2="20"
+          y2="33"
+          stroke="#00D4AA"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="32"
+          y1="25"
+          x2="32"
+          y2="33"
+          stroke="#00D4AA"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="13"
+          y1="33"
+          x2="39"
+          y2="33"
+          stroke="#1E4D44"
+          stroke-width="1.2"
+          stroke-linecap="round"
+        />
+        <text
+          x="64"
+          y="28"
+          font-size="22"
+          font-weight="700"
+          fill="#E2F9F5"
+          font-family="ui-monospace,monospace"
+          letter-spacing="-1"
+        >
+          edge
+        </text>
+        <text
+          x="127"
+          y="28"
+          font-size="22"
+          font-weight="300"
+          fill="#00D4AA"
+          font-family="ui-monospace,monospace"
+          letter-spacing="-1"
+        >
+          stat
+        </text>
+        <text
+          x="64"
+          y="44"
+          font-size="9"
+          fill="#1E6B5A"
+          font-family="ui-monospace,monospace"
+          letter-spacing="0.14em"
+        >
+          ANALYTICS AT THE EDGE
+        </text>
       </svg>
-      <span class="chip-label-light">light bg</span>
+      <div style="font-size: 10px; color: var(--es-label); margin-top: 8px">
+        horizontal · dark background
+      </div>
     </div>
-    <div class="chip">
-      <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
-        <polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/>
-        <line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/>
+    <div
+      class="chip-light"
+      style="align-items: flex-start; padding: 1.25rem; margin-bottom: 16px; width: 100%"
+    >
+      <svg width="100%" height="52" viewBox="0 0 460 52" fill="none">
+        <rect width="52" height="52" rx="12" fill="#E2F9F5" />
+        <polygon
+          points="26,9 43,18 43,34 26,43 9,34 9,18"
+          fill="none"
+          stroke="#00D4AA"
+          stroke-width="1.2"
+        />
+        <line
+          x1="26"
+          y1="17"
+          x2="26"
+          y2="33"
+          stroke="#0A2540"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="20"
+          y1="21"
+          x2="20"
+          y2="33"
+          stroke="#00D4AA"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="32"
+          y1="25"
+          x2="32"
+          y2="33"
+          stroke="#00D4AA"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <line
+          x1="13"
+          y1="33"
+          x2="39"
+          y2="33"
+          stroke="#00D4AA"
+          stroke-width="1.2"
+          stroke-linecap="round"
+        />
+        <text
+          x="64"
+          y="28"
+          font-size="22"
+          font-weight="700"
+          fill="#050B14"
+          font-family="ui-monospace,monospace"
+          letter-spacing="-1"
+        >
+          edge
+        </text>
+        <text
+          x="127"
+          y="28"
+          font-size="22"
+          font-weight="300"
+          fill="#00A080"
+          font-family="ui-monospace,monospace"
+          letter-spacing="-1"
+        >
+          stat
+        </text>
+        <text
+          x="64"
+          y="44"
+          font-size="9"
+          fill="#00A080"
+          font-family="ui-monospace,monospace"
+          letter-spacing="0.14em"
+        >
+          ANALYTICS AT THE EDGE
+        </text>
       </svg>
-      <span class="chip-label">transparent</span>
+      <div style="font-size: 10px; color: #00a080; margin-top: 8px">
+        horizontal · light background
+      </div>
     </div>
-    <div class="chip">
-      <svg width="80" height="80" viewBox="0 0 72 72" fill="none">
-        <polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.4"/>
-        <line x1="36" y1="24" x2="36" y2="47" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="26" y1="31" x2="26" y2="47" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.6"/>
-        <line x1="46" y1="37" x2="46" y2="47" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.6"/>
-        <line x1="18" y1="47" x2="54" y2="47" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
-      </svg>
-      <span class="chip-label">mono white</span>
-    </div>
-  </div>
 
-  <!-- Wordmarks -->
-  <div class="section">Wordmark</div>
-  <div class="wm-block" style="margin-bottom:8px;">
-    <svg width="100%" height="52" viewBox="0 0 460 52" fill="none">
-      <rect width="52" height="52" rx="12" fill="#0A2540"/>
-      <polygon points="26,9 43,18 43,34 26,43 9,34 9,18" fill="none" stroke="#00D4AA" stroke-width="1.2"/>
-      <line x1="26" y1="17" x2="26" y2="33" stroke="#00FFD1" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="20" y1="21" x2="20" y2="33" stroke="#00D4AA" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="32" y1="25" x2="32" y2="33" stroke="#00D4AA" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="13" y1="33" x2="39" y2="33" stroke="#1E4D44" stroke-width="1.2" stroke-linecap="round"/>
-      <text x="64" y="28" font-size="22" font-weight="700" fill="#E2F9F5" font-family="ui-monospace,monospace" letter-spacing="-1">edge</text>
-      <text x="127" y="28" font-size="22" font-weight="300" fill="#00D4AA" font-family="ui-monospace,monospace" letter-spacing="-1">stat</text>
-      <text x="64" y="44" font-size="9" fill="#1E6B5A" font-family="ui-monospace,monospace" letter-spacing="0.14em">ANALYTICS AT THE EDGE</text>
-    </svg>
-    <div style="font-size:10px;color:var(--es-label);margin-top:8px;">horizontal · dark background</div>
-  </div>
-  <div class="chip-light" style="align-items:flex-start;padding:1.25rem;margin-bottom:16px;width:100%;">
-    <svg width="100%" height="52" viewBox="0 0 460 52" fill="none">
-      <rect width="52" height="52" rx="12" fill="#E2F9F5"/>
-      <polygon points="26,9 43,18 43,34 26,43 9,34 9,18" fill="none" stroke="#00D4AA" stroke-width="1.2"/>
-      <line x1="26" y1="17" x2="26" y2="33" stroke="#0A2540" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="20" y1="21" x2="20" y2="33" stroke="#00D4AA" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="32" y1="25" x2="32" y2="33" stroke="#00D4AA" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="13" y1="33" x2="39" y2="33" stroke="#00D4AA" stroke-width="1.2" stroke-linecap="round"/>
-      <text x="64" y="28" font-size="22" font-weight="700" fill="#050B14" font-family="ui-monospace,monospace" letter-spacing="-1">edge</text>
-      <text x="127" y="28" font-size="22" font-weight="300" fill="#00A080" font-family="ui-monospace,monospace" letter-spacing="-1">stat</text>
-      <text x="64" y="44" font-size="9" fill="#00A080" font-family="ui-monospace,monospace" letter-spacing="0.14em">ANALYTICS AT THE EDGE</text>
-    </svg>
-    <div style="font-size:10px;color:#00a080;margin-top:8px;">horizontal · light background</div>
-  </div>
+    <!-- Scale -->
+    <div class="section">Icon scale</div>
+    <div class="scale-row">
+      <div class="scale-item">
+        <svg width="16" height="16" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>16px</span>
+      </div>
+      <div class="scale-item">
+        <svg width="24" height="24" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>24px</span>
+      </div>
+      <div class="scale-item">
+        <svg width="32" height="32" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>32px</span>
+      </div>
+      <div class="scale-item">
+        <svg width="48" height="48" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>48px</span>
+      </div>
+      <div class="scale-item">
+        <svg width="64" height="64" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>64px</span>
+      </div>
+      <div class="scale-item">
+        <svg width="96" height="96" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>96px</span>
+      </div>
+    </div>
 
-  <!-- Scale -->
-  <div class="section">Icon scale</div>
-  <div class="scale-row">
-    <div class="scale-item">
-      <svg width="16" height="16" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>16px</span>
+    <!-- Colour tokens -->
+    <div class="section">Colour tokens</div>
+    <div class="swatch-row">
+      <div class="sw" style="background: #050b14">
+        <div class="sw-name" style="color: #00d4aa">Void</div>
+        <div class="sw-hex" style="color: #1e4d44">#050B14</div>
+      </div>
+      <div class="sw" style="background: #0a2540">
+        <div class="sw-name" style="color: #00d4aa">Deep</div>
+        <div class="sw-hex" style="color: #1e4d44">#0A2540</div>
+      </div>
+      <div class="sw" style="background: #0d3d30">
+        <div class="sw-name" style="color: #00ffd1">Surface</div>
+        <div class="sw-hex" style="color: #1e6b5a">#0D3D30</div>
+      </div>
+      <div class="sw" style="background: #00d4aa">
+        <div class="sw-name" style="color: #050b14">Teal</div>
+        <div class="sw-hex" style="color: #0a2540">#00D4AA</div>
+      </div>
+      <div class="sw" style="background: #00ffd1">
+        <div class="sw-name" style="color: #050b14">Mint</div>
+        <div class="sw-hex" style="color: #0a2540">#00FFD1</div>
+      </div>
+      <div class="sw" style="background: #7fffd4">
+        <div class="sw-name" style="color: #050b14">Aqua</div>
+        <div class="sw-hex" style="color: #0a3d30">#7FFFD4</div>
+      </div>
+      <div class="sw" style="background: #e2f9f5">
+        <div class="sw-name" style="color: #050b14">Mist</div>
+        <div class="sw-hex" style="color: #00a080">#E2F9F5</div>
+      </div>
     </div>
-    <div class="scale-item">
-      <svg width="24" height="24" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>24px</span>
-    </div>
-    <div class="scale-item">
-      <svg width="32" height="32" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>32px</span>
-    </div>
-    <div class="scale-item">
-      <svg width="48" height="48" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>48px</span>
-    </div>
-    <div class="scale-item">
-      <svg width="64" height="64" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>64px</span>
-    </div>
-    <div class="scale-item">
-      <svg width="96" height="96" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>96px</span>
-    </div>
-  </div>
 
-  <!-- Colour tokens -->
-  <div class="section">Colour tokens</div>
-  <div class="swatch-row">
-    <div class="sw" style="background:#050B14;">
-      <div class="sw-name" style="color:#00D4AA;">Void</div>
-      <div class="sw-hex"  style="color:#1E4D44;">#050B14</div>
+    <div class="section">CSS design tokens</div>
+    <div class="token-wrap">
+      <table class="token-table">
+        <tr>
+          <td>--es-void</td>
+          <td>#050B14</td>
+          <td>Page background</td>
+        </tr>
+        <tr>
+          <td>--es-deep</td>
+          <td>#0A2540</td>
+          <td>Card / nav background</td>
+        </tr>
+        <tr>
+          <td>--es-surface</td>
+          <td>#0D3D30</td>
+          <td>Elevated surface / borders</td>
+        </tr>
+        <tr>
+          <td>--es-teal</td>
+          <td>#00D4AA</td>
+          <td>Primary accent</td>
+        </tr>
+        <tr>
+          <td>--es-mint</td>
+          <td>#00FFD1</td>
+          <td>Highlight / data values</td>
+        </tr>
+        <tr>
+          <td>--es-aqua</td>
+          <td>#7FFFD4</td>
+          <td>Secondary text on dark</td>
+        </tr>
+        <tr>
+          <td>--es-mist</td>
+          <td>#E2F9F5</td>
+          <td>Primary text on dark</td>
+        </tr>
+      </table>
     </div>
-    <div class="sw" style="background:#0A2540;">
-      <div class="sw-name" style="color:#00D4AA;">Deep</div>
-      <div class="sw-hex"  style="color:#1E4D44;">#0A2540</div>
-    </div>
-    <div class="sw" style="background:#0D3D30;">
-      <div class="sw-name" style="color:#00FFD1;">Surface</div>
-      <div class="sw-hex"  style="color:#1E6B5A;">#0D3D30</div>
-    </div>
-    <div class="sw" style="background:#00D4AA;">
-      <div class="sw-name" style="color:#050B14;">Teal</div>
-      <div class="sw-hex"  style="color:#0A2540;">#00D4AA</div>
-    </div>
-    <div class="sw" style="background:#00FFD1;">
-      <div class="sw-name" style="color:#050B14;">Mint</div>
-      <div class="sw-hex"  style="color:#0A2540;">#00FFD1</div>
-    </div>
-    <div class="sw" style="background:#7FFFD4;">
-      <div class="sw-name" style="color:#050B14;">Aqua</div>
-      <div class="sw-hex"  style="color:#0A3D30;">#7FFFD4</div>
-    </div>
-    <div class="sw" style="background:#E2F9F5;">
-      <div class="sw-name" style="color:#050B14;">Mist</div>
-      <div class="sw-hex"  style="color:#00A080;">#E2F9F5</div>
-    </div>
-  </div>
 
-  <div class="section">CSS design tokens</div>
-  <div class="token-wrap">
-    <table class="token-table">
-      <tr><td>--es-void</td>    <td>#050B14</td><td>Page background</td></tr>
-      <tr><td>--es-deep</td>    <td>#0A2540</td><td>Card / nav background</td></tr>
-      <tr><td>--es-surface</td> <td>#0D3D30</td><td>Elevated surface / borders</td></tr>
-      <tr><td>--es-teal</td>    <td>#00D4AA</td><td>Primary accent</td></tr>
-      <tr><td>--es-mint</td>    <td>#00FFD1</td><td>Highlight / data values</td></tr>
-      <tr><td>--es-aqua</td>    <td>#7FFFD4</td><td>Secondary text on dark</td></tr>
-      <tr><td>--es-mist</td>    <td>#E2F9F5</td><td>Primary text on dark</td></tr>
-    </table>
-  </div>
-
-  <!-- Dashboard preview -->
-  <div class="section">In-context — dashboard</div>
-  <div class="dashboard-wrap">
-    <div class="nav-bar">
-      <svg width="22" height="22" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="12" fill="#0D3D30"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span style="font-size:14px;font-weight:700;color:#E2F9F5;">edge<span style="font-weight:300;color:#00D4AA;">stat</span></span>
-      <div style="flex:1;"></div>
-      <span style="font-size:11px;color:#1E6B5A;">mysite.com</span>
-      <div class="live-dot"></div>
-      <span style="font-size:11px;color:#00D4AA;">3 live</span>
-    </div>
-    <div class="dashboard-body">
-      <div class="stat-grid">
-        <div class="stat-box">
-          <div class="stat-lbl">visitors</div>
-          <div class="stat-val">12,401</div>
-          <div class="stat-delta">+8.2% vs last week</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-lbl">pageviews</div>
-          <div class="stat-val">38,820</div>
-          <div class="stat-delta">+12.1% vs last week</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-lbl">bounce rate</div>
-          <div class="stat-val">34.7%</div>
-          <div class="stat-delta">-2.3% vs last week</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-lbl">p95 latency</div>
-          <div class="stat-val">18ms</div>
-          <div class="stat-delta">edge · global</div>
+    <!-- Dashboard preview -->
+    <div class="section">In-context — dashboard</div>
+    <div class="dashboard-wrap">
+      <div class="nav-bar">
+        <svg width="22" height="22" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="12" fill="#0D3D30" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span style="font-size: 14px; font-weight: 700; color: #e2f9f5"
+          >edge<span style="font-weight: 300; color: #00d4aa">stat</span></span
+        >
+        <div style="flex: 1"></div>
+        <span style="font-size: 11px; color: #1e6b5a">mysite.com</span>
+        <div class="live-dot"></div>
+        <span style="font-size: 11px; color: #00d4aa">3 live</span>
+      </div>
+      <div class="dashboard-body">
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-lbl">visitors</div>
+            <div class="stat-val">12,401</div>
+            <div class="stat-delta">+8.2% vs last week</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-lbl">pageviews</div>
+            <div class="stat-val">38,820</div>
+            <div class="stat-delta">+12.1% vs last week</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-lbl">bounce rate</div>
+            <div class="stat-val">34.7%</div>
+            <div class="stat-delta">-2.3% vs last week</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-lbl">p95 latency</div>
+            <div class="stat-val">18ms</div>
+            <div class="stat-delta">edge · global</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- GitHub README -->
-  <div class="section">In-context — GitHub README header</div>
-  <div style="background:#0D1117;border-radius:12px;padding:24px;margin-bottom:16px;border:0.5px solid #21262d;">
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-      <svg width="48" height="48" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="3.5" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="3.5" stroke-linecap="round"/><line x1="18" y1="47" x2="54" y2="47" stroke="#1E4D44" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <div>
-        <div style="font-size:24px;font-weight:700;color:#E2F9F5;letter-spacing:-0.5px;">edge<span style="font-weight:300;color:#00D4AA;">stat</span></div>
-        <div style="font-size:12px;color:#1E6B5A;margin-top:3px;letter-spacing:0.05em;">Analytics at the edge. Owned by you.</div>
+    <!-- GitHub README -->
+    <div class="section">In-context — GitHub README header</div>
+    <div
+      style="
+        background: #0d1117;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 16px;
+        border: 0.5px solid #21262d;
+      "
+    >
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px">
+        <svg width="48" height="48" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#0A2540" />
+          <polygon
+            points="36,12 60,25 60,49 36,60 12,49 12,25"
+            fill="none"
+            stroke="#00D4AA"
+            stroke-width="1.5"
+          />
+          <line
+            x1="36"
+            y1="24"
+            x2="36"
+            y2="47"
+            stroke="#00FFD1"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="26"
+            y1="31"
+            x2="26"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="46"
+            y1="37"
+            x2="46"
+            y2="47"
+            stroke="#00D4AA"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <line
+            x1="18"
+            y1="47"
+            x2="54"
+            y2="47"
+            stroke="#1E4D44"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <div>
+          <div style="font-size: 24px; font-weight: 700; color: #e2f9f5; letter-spacing: -0.5px">
+            edge<span style="font-weight: 300; color: #00d4aa">stat</span>
+          </div>
+          <div style="font-size: 12px; color: #1e6b5a; margin-top: 3px; letter-spacing: 0.05em">
+            Analytics at the edge. Owned by you.
+          </div>
+        </div>
+      </div>
+      <div class="pill-row">
+        <span class="pill">open source</span>
+        <span class="pill">cloudflare native</span>
+        <span class="pill">free tier</span>
+        <span class="pill">no cookies</span>
+        <span class="pill">gdpr compliant</span>
       </div>
     </div>
-    <div class="pill-row">
-      <span class="pill">open source</span>
-      <span class="pill">cloudflare native</span>
-      <span class="pill">free tier</span>
-      <span class="pill">no cookies</span>
-      <span class="pill">gdpr compliant</span>
-    </div>
-  </div>
 
-  <!-- Badge + CLI -->
-  <div class="section">In-context — badge &amp; CLI</div>
-  <div class="usage-grid">
-    <div class="usage-card">
-      <div class="badge">
-        <svg width="14" height="14" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="10" fill="#0A2540"/><polygon points="36,12 60,25 60,49 36,60 12,49 12,25" fill="none" stroke="#00D4AA" stroke-width="2"/><line x1="36" y1="24" x2="36" y2="47" stroke="#00FFD1" stroke-width="4" stroke-linecap="round"/><line x1="26" y1="31" x2="26" y2="47" stroke="#00D4AA" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="37" x2="46" y2="47" stroke="#00D4AA" stroke-width="4" stroke-linecap="round"/></svg>
-        <span class="badge-text">Powered by <span>edgestat</span></span>
+    <!-- Badge + CLI -->
+    <div class="section">In-context — badge &amp; CLI</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <div class="badge">
+          <svg width="14" height="14" viewBox="0 0 72 72" fill="none">
+            <rect width="72" height="72" rx="10" fill="#0A2540" />
+            <polygon
+              points="36,12 60,25 60,49 36,60 12,49 12,25"
+              fill="none"
+              stroke="#00D4AA"
+              stroke-width="2"
+            />
+            <line
+              x1="36"
+              y1="24"
+              x2="36"
+              y2="47"
+              stroke="#00FFD1"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <line
+              x1="26"
+              y1="31"
+              x2="26"
+              y2="47"
+              stroke="#00D4AA"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <line
+              x1="46"
+              y1="37"
+              x2="46"
+              y2="47"
+              stroke="#00D4AA"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span class="badge-text">Powered by <span>edgestat</span></span>
+        </div>
+        <span class="usage-label">attribution badge</span>
       </div>
-      <span class="usage-label">attribution badge</span>
-    </div>
-    <div class="usage-card">
-      <div class="cli-block">
-        <span class="prompt">$ </span><span class="cmd">npx create-edgestat-app</span><br>
-        <span class="ok">✓ </span><span class="info">Provisioning D1, KV, R2...</span><br>
-        <span class="ok">✓ </span><span class="info">Deploying to Cloudflare...</span><br>
-        <span class="ok">✓ </span><span class="cmd">Live at </span><span class="url">edgestat.pages.dev</span>
+      <div class="usage-card">
+        <div class="cli-block">
+          <span class="prompt">$ </span><span class="cmd">npx create-edgestat-app</span><br />
+          <span class="ok">✓ </span><span class="info">Provisioning D1, KV, R2...</span><br />
+          <span class="ok">✓ </span><span class="info">Deploying to Cloudflare...</span><br />
+          <span class="ok">✓ </span><span class="cmd">Live at </span
+          ><span class="url">edgestat.pages.dev</span>
+        </div>
+        <span class="usage-label">CLI output</span>
       </div>
-      <span class="usage-label">CLI output</span>
     </div>
-  </div>
 
-  <!-- Taglines -->
-  <div class="section">Tagline options</div>
-  <div class="tagline-wrap">
-    <table class="tagline-table">
-      <tr>
-        <td style="color:var(--es-mint);">Analytics at the edge. Owned by you.</td>
-        <td style="text-align:right;"><span class="recommended">recommended</span></td>
-      </tr>
-      <tr><td style="color:var(--es-aqua);">Your data. Your Cloudflare. Your rules.</td><td></td></tr>
-      <tr><td style="color:var(--es-aqua);">Open-source analytics built for the edge.</td><td></td></tr>
-      <tr><td style="color:var(--es-aqua);">Deploy once. Track everything. Own it all.</td><td></td></tr>
-    </table>
-  </div>
+    <!-- Taglines -->
+    <div class="section">Tagline options</div>
+    <div class="tagline-wrap">
+      <table class="tagline-table">
+        <tr>
+          <td style="color: var(--es-mint)">Analytics at the edge. Owned by you.</td>
+          <td style="text-align: right"><span class="recommended">recommended</span></td>
+        </tr>
+        <tr>
+          <td style="color: var(--es-aqua)">Your data. Your Cloudflare. Your rules.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="color: var(--es-aqua)">Open-source analytics built for the edge.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="color: var(--es-aqua)">Deploy once. Track everything. Own it all.</td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <span>edgestat · brand kit v1.0</span>
-    <span>Electric Teal palette · 2025</span>
-  </div>
-
-</body>
+    <!-- Footer -->
+    <div class="footer">
+      <span>edgestat · brand kit v1.0</span>
+      <span>Electric Teal palette · 2025</span>
+    </div>
+  </body>
 </html>

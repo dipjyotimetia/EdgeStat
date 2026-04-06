@@ -10,7 +10,7 @@ export function generateMasterKey(): string {
 export async function setMasterKey(
   projectRoot: string,
   masterKey: string,
-  dryRun: boolean,
+  dryRun: boolean
 ): Promise<StepResult> {
   if (dryRun) return { status: 'skipped' };
 

@@ -66,11 +66,13 @@ export function Sidebar() {
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-mono transition-colors',
                 isActive
                   ? 'bg-edge-900 text-edge-600 border border-edge-800'
-                  : 'text-edge-muted hover:text-edge-700 hover:bg-edge-900/50',
+                  : 'text-edge-muted hover:text-edge-700 hover:bg-edge-900/50'
               )
             }
           >
-            <span className="text-base" aria-hidden="true">{item.icon}</span>
+            <span className="text-base" aria-hidden="true">
+              {item.icon}
+            </span>
             {item.label}
           </NavLink>
         ))}

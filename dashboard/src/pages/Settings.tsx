@@ -48,7 +48,9 @@ export function SettingsPage() {
 
         {/* Snippet */}
         <div className="bg-edge-900/50 border border-edge-800 rounded-xl p-5 space-y-4">
-          <h3 className="text-sm font-mono text-edge-600 uppercase tracking-wider">Tracking Snippet</h3>
+          <h3 className="text-sm font-mono text-edge-600 uppercase tracking-wider">
+            Tracking Snippet
+          </h3>
           <div className="relative">
             <pre className="bg-edge-950 border border-edge-800 rounded-lg p-4 text-sm text-edge-500 font-mono overflow-x-auto">
               <code>{snippet}</code>
@@ -64,7 +66,9 @@ export function SettingsPage() {
 
         {/* Danger zone */}
         <div className="bg-edge-900/50 border border-red-900/30 rounded-xl p-5">
-          <h3 className="text-sm font-mono text-red-400 uppercase tracking-wider mb-3">Danger Zone</h3>
+          <h3 className="text-sm font-mono text-red-400 uppercase tracking-wider mb-3">
+            Danger Zone
+          </h3>
           <button
             onClick={logout}
             className="bg-red-900/30 hover:bg-red-900/50 text-red-400 font-mono text-sm px-4 py-2 rounded-lg transition-colors"

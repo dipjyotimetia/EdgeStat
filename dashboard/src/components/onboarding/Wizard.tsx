@@ -78,7 +78,13 @@ export function OnboardingWizard() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex items-center justify-center gap-2 mb-8" role="progressbar" aria-valuenow={step === 'setup' ? 1 : step === 'snippet' ? 2 : 3} aria-valuemin={1} aria-valuemax={3}>
+        <div
+          className="flex items-center justify-center gap-2 mb-8"
+          role="progressbar"
+          aria-valuenow={step === 'setup' ? 1 : step === 'snippet' ? 2 : 3}
+          aria-valuemin={1}
+          aria-valuemax={3}
+        >
           {(['setup', 'snippet', 'verify'] as Step[]).map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <div
@@ -114,7 +120,9 @@ export function OnboardingWizard() {
                 placeholder="Your MASTER_KEY secret"
                 className="w-full bg-edge-950 border border-edge-800 rounded-lg px-3 py-2.5 text-sm text-edge-400 font-mono placeholder:text-edge-muted focus:outline-none focus:ring-2 focus:ring-edge-700"
               />
-              <p className="text-xs text-edge-muted mt-1">Set via: wrangler secret put MASTER_KEY</p>
+              <p className="text-xs text-edge-muted mt-1">
+                Set via: wrangler secret put MASTER_KEY
+              </p>
             </div>
 
             <div>
@@ -146,7 +154,9 @@ export function OnboardingWizard() {
             </div>
 
             {error && (
-              <p className="text-red-400 text-sm font-mono" role="alert">{error}</p>
+              <p className="text-red-400 text-sm font-mono" role="alert">
+                {error}
+              </p>
             )}
 
             <button
@@ -161,7 +171,9 @@ export function OnboardingWizard() {
         {/* Step 2: Copy snippet */}
         {step === 'snippet' && (
           <div className="bg-edge-900/50 border border-edge-800 rounded-xl p-6 space-y-5">
-            <h2 className="text-lg font-semibold text-edge-400 font-mono">Install tracking snippet</h2>
+            <h2 className="text-lg font-semibold text-edge-400 font-mono">
+              Install tracking snippet
+            </h2>
             <p className="text-sm text-edge-600 font-mono">
               Add this script tag to your website&apos;s &lt;head&gt;:
             </p>
@@ -180,7 +192,10 @@ export function OnboardingWizard() {
             </div>
 
             <button
-              onClick={() => { setStep('verify'); handleVerify(); }}
+              onClick={() => {
+                setStep('verify');
+                handleVerify();
+              }}
               className="w-full bg-edge-700 hover:bg-edge-600 text-edge-950 font-mono text-sm py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-edge-700 focus:ring-offset-2 focus:ring-offset-edge-950"
             >
               I&apos;ve added the snippet
@@ -194,10 +209,10 @@ export function OnboardingWizard() {
             {verified ? (
               <>
                 <div className="text-4xl mb-2">&#10003;</div>
-                <h2 className="text-lg font-semibold text-edge-400 font-mono">First event received!</h2>
-                <p className="text-sm text-edge-600 font-mono">
-                  Your analytics are now live.
-                </p>
+                <h2 className="text-lg font-semibold text-edge-400 font-mono">
+                  First event received!
+                </h2>
+                <p className="text-sm text-edge-600 font-mono">Your analytics are now live.</p>
                 <a
                   href={`/sites/${siteId}`}
                   className="inline-block bg-edge-700 hover:bg-edge-600 text-edge-950 font-mono text-sm py-2.5 px-6 rounded-lg transition-colors"
@@ -207,7 +222,10 @@ export function OnboardingWizard() {
               </>
             ) : (
               <>
-                <div className="inline-block w-8 h-8 border-2 border-edge-700 border-t-transparent rounded-full animate-spin" role="status">
+                <div
+                  className="inline-block w-8 h-8 border-2 border-edge-700 border-t-transparent rounded-full animate-spin"
+                  role="status"
+                >
                   <span className="sr-only">Waiting for first event...</span>
                 </div>
                 <h2 className="text-lg font-semibold text-edge-400 font-mono">

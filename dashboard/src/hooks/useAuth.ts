@@ -4,11 +4,11 @@ const MASTER_KEY_STORAGE = 'edgestat_master_key';
 const SITE_ID_STORAGE = 'edgestat_site_id';
 
 export function useAuth() {
-  const [masterKey, setMasterKeyState] = useState<string | null>(
-    () => localStorage.getItem(MASTER_KEY_STORAGE),
+  const [masterKey, setMasterKeyState] = useState<string | null>(() =>
+    localStorage.getItem(MASTER_KEY_STORAGE)
   );
-  const [siteId, setSiteIdState] = useState<string | null>(
-    () => localStorage.getItem(SITE_ID_STORAGE),
+  const [siteId, setSiteIdState] = useState<string | null>(() =>
+    localStorage.getItem(SITE_ID_STORAGE)
   );
 
   const setMasterKey = useCallback((key: string) => {

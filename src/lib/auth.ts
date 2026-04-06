@@ -19,13 +19,7 @@ export function requireMasterKey(request: HasHeaders, env: Env): Response | null
   return null;
 }
 
-export async function validateSiteApiKey(
-  db: D1Database,
-  siteId: string,
-): Promise<boolean> {
-  const site = await db
-    .prepare('SELECT id FROM sites WHERE id = ?')
-    .bind(siteId)
-    .first();
+export async function validateSiteApiKey(db: D1Database, siteId: string): Promise<boolean> {
+  const site = await db.prepare('SELECT id FROM sites WHERE id = ?').bind(siteId).first();
   return site !== null;
 }

@@ -23,14 +23,21 @@ function formatValue(value: string | number, format: string): string {
   }
 }
 
-export function MetricCard({ label, value, change, sparklineData, format = 'number' }: MetricCardProps) {
-  const changeColor = change === undefined
-    ? ''
-    : change > 0
-      ? 'text-edge-700'
-      : change < 0
-        ? 'text-red-400'
-        : 'text-edge-muted';
+export function MetricCard({
+  label,
+  value,
+  change,
+  sparklineData,
+  format = 'number',
+}: MetricCardProps) {
+  const changeColor =
+    change === undefined
+      ? ''
+      : change > 0
+        ? 'text-edge-700'
+        : change < 0
+          ? 'text-red-400'
+          : 'text-edge-muted';
   const changePrefix = change !== undefined && change > 0 ? '+' : '';
 
   return (
@@ -43,7 +50,8 @@ export function MetricCard({ label, value, change, sparklineData, format = 'numb
           </span>
           {change !== undefined && (
             <span className={`ml-2 text-xs font-mono ${changeColor}`}>
-              {changePrefix}{change.toFixed(1)}%
+              {changePrefix}
+              {change.toFixed(1)}%
             </span>
           )}
         </div>

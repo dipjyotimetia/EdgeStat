@@ -55,10 +55,7 @@ export function BarChart({ data, dataKey = 'pageviews' }: BarChartProps) {
             axisLine={false}
             width="auto"
           />
-          <Tooltip
-            {...TOOLTIP_STYLE}
-            animationDuration={ANIMATION_PROPS.animationDuration}
-          />
+          <Tooltip {...TOOLTIP_STYLE} animationDuration={ANIMATION_PROPS.animationDuration} />
           <Bar<ChartDataPoint>
             dataKey={dataKey}
             xAxisId={0}

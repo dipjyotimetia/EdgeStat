@@ -34,7 +34,15 @@
       "Bash(python3:*)",
       "Bash(echo \"exit:$?\")",
       "Bash(grep -E \"\\\\.md$\")",
-      "Bash(npm pack:*)"
+      "Bash(npm pack:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm view:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run:*)",
+      "Bash(chmod +x /Users/dipjyotimetia/Documents/working/ccviews/analytics-engine/.husky/pre-commit)",
+      "Bash(npx prettier:*)",
+      "Bash(npx turbo:*)",
+      "Bash(npm --version)"
     ]
   }
 }

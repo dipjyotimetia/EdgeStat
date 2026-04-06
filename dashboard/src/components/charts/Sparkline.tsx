@@ -7,12 +7,7 @@ interface SparklineProps {
   color?: string;
 }
 
-export function Sparkline({
-  data,
-  width = 100,
-  height = 32,
-  color = '#00D4AA',
-}: SparklineProps) {
+export function Sparkline({ data, width = 100, height = 32, color = '#00D4AA' }: SparklineProps) {
   // Bug #9 fix: unique gradient ID per instance
   const gradientId = useId();
 
@@ -47,7 +42,14 @@ export function Sparkline({
         </linearGradient>
       </defs>
       <path d={fillPath} fill={`url(#${gradientId})`} />
-      <path d={linePath} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d={linePath}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
