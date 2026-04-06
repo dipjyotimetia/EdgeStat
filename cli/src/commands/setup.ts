@@ -1,6 +1,7 @@
 import { intro, outro, spinner, note, confirm, text, cancel, isCancel } from '@clack/prompts';
 import { brand, log } from '../lib/colors.js';
-import { findProjectRoot, patchWranglerConfigBatch, isAlreadyPatched } from '../lib/config.js';
+import { patchWranglerConfigBatch, isAlreadyPatched } from '../lib/config.js';
+import { scaffold, type ScaffoldMode } from '../lib/steps/scaffold.js';
 import { RESOURCE_NAMES } from '../lib/constants.js';
 import { checkPrerequisites } from '../lib/steps/prerequisites.js';
 import { createD1 } from '../lib/steps/d1.js';
@@ -47,12 +48,31 @@ export async function setup(options: SetupOptions) {
     process.exit(1);
   }
 
-  const projectRoot = findProjectRoot();
+  const s = spinner();
+
+  s.start('Checking project setup...');
+  let scaffoldResult: { mode: ScaffoldMode; projectRoot: string };
+  try {
+    scaffoldResult = await scaffold(process.cwd(), dryRun);
+  } catch (e) {
+    s.stop(`${brand.red('✗')} Project setup failed`);
+    log.error((e as Error).message);
+    process.exit(1);
+  }
+  const { mode, projectRoot } = scaffoldResult;
+
+  if (mode === 'existing') {
+    s.stop(`${brand.teal('✓')} Project root found`);
+  } else if (mode === 'project') {
+    s.stop(`${brand.teal('✓')} wrangler.jsonc generated (project mode)`);
+  } else {
+    s.stop(`${brand.teal('✓')} Release downloaded and wrangler.jsonc generated`);
+  }
+
   let masterKey: string;
   let workerUrl = '';
   let firstSite: FirstSiteResult | null = null;
   const completed: string[] = [];
-  const s = spinner();
 
   // ─── Resource provisioning ──────────────────────────────────────────
   const steps: StepDef[] = [
@@ -183,7 +203,7 @@ export async function setup(options: SetupOptions) {
   if (!skipDeploy) {
     s.start('Building project...');
     try {
-      await buildProject(projectRoot, dryRun);
+      await buildProject(projectRoot, dryRun, mode);
       s.stop(`${brand.teal('✓')} Project built`);
       completed.push('build');
     } catch (e) {
