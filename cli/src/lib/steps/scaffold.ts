@@ -1,4 +1,5 @@
-import { existsSync, writeFileSync, unlinkSync } from 'node:fs';
+import { existsSync, unlinkSync, createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream/promises';
 import { resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { exec } from '../exec.js';
@@ -83,9 +84,9 @@ async function downloadRelease(cwd: string): Promise<void> {
   try {
     const res = await fetch(asset.browser_download_url);
     if (!res.ok) throw new Error(`Download failed: HTTP ${res.status}`);
-    const buf = await res.arrayBuffer();
-    writeFileSync(tarPath, Buffer.from(buf));
-    exec(`tar -xzf ${tarPath} -C ${cwd}`);
+    if (!res.body) throw new Error('Download response has no body');
+    await pipeline(res.body, createWriteStream(tarPath));
+    exec(`tar -xzf "${tarPath}" -C "${cwd}"`);
   } finally {
     try {
       unlinkSync(tarPath);
