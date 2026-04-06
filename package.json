@@ -21,7 +21,7 @@
     "db:migrate:remote": "wrangler d1 migrations apply edgestat-db --remote",
     "types": "wrangler types",
     "typecheck": "turbo run typecheck",
-    "setup": "npx tsx cli/src/index.ts setup"
+    "setup": "npm run build --workspace cli && node cli/dist/index.js setup"
   },
   "dependencies": {
     "@edgestat/schemas": "*",
