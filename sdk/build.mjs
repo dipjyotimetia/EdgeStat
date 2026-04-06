@@ -1,8 +1,8 @@
 import { buildSync } from 'esbuild';
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { gzipSync } from 'zlib';
 
-// Build the tracking snippet
+// Build the tracking snippet (IIFE → Worker asset at /s.js)
 const result = buildSync({
   entryPoints: ['src/snippet.ts'],
   bundle: true,
@@ -21,18 +21,22 @@ if (gzipped.length > 2048) {
   console.warn(`WARNING: Snippet exceeds 2KB gzipped target (${gzipped.length} bytes)`);
 }
 
-// Write directly to dashboard/dist/s.js (served as a Worker asset at /s.js)
+// Write snippet to dashboard/dist/s.js (served by Worker)
 mkdirSync('../dashboard/dist', { recursive: true });
 writeFileSync('../dashboard/dist/s.js', code);
 
-// Also build the full SDK
+// Build the npm-publishable SDK (ESM → dist/index.mjs)
+// packages: 'bundle' inlines @edgestat/schemas (private workspace pkg, not on npm)
+// minify: false preserves tree-shaking for consumers
+mkdirSync('dist', { recursive: true });
 buildSync({
-  entryPoints: ['src/client.ts'],
+  entryPoints: ['src/index.ts'],
   bundle: true,
-  minify: true,
+  minify: false,
   format: 'esm',
   target: 'es2020',
-  outfile: '../public/edgestat.mjs',
+  outfile: 'dist/index.mjs',
+  packages: 'bundle',
 });
 
 console.log('SDK built successfully');

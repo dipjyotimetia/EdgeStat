@@ -70,9 +70,6 @@ Browser/SDK                     Cloudflare Edge
 git clone https://github.com/dipjyotimetia/edgestat.git
 cd edgestat
 npm install
-cd dashboard && npm install && cd ..
-cd sdk && npm install && cd ..
-cd cli && npm install && cd ..
 ```
 
 ### 2. Login to Cloudflare
@@ -127,6 +124,10 @@ Add to your website's `<head>`:
 ## TypeScript SDK
 
 For server-side or mobile usage:
+
+```bash
+npm install edgestat-sdk
+```
 
 ```typescript
 import { EdgeStatClient } from "edgestat-sdk";
@@ -212,22 +213,46 @@ cd dashboard && npm run dev
 The dashboard dev server proxies `/v1`, `/api`, and `/sse` to the Worker at
 `localhost:8787`.
 
+## CI/CD
+
+[![CI](https://github.com/dipjyotimetia/EdgeStat/actions/workflows/ci.yml/badge.svg)](https://github.com/dipjyotimetia/EdgeStat/actions/workflows/ci.yml)
+
+| Workflow | Trigger | What it does |
+|----------|---------|--------------|
+| **CI** | Every push and PR | Typechecks and builds all packages |
+| **Deploy Worker** | Push to `main` | Deploys the Cloudflare Worker via Wrangler |
+| **Publish SDK** | GitHub Release published | Publishes `edgestat-sdk` to npm |
+
+### Required Secrets
+
+Set these in **GitHub → Settings → Secrets and variables → Actions**:
+
+| Secret | Used by | How to get it |
+|--------|---------|---------------|
+| `CLOUDFLARE_API_TOKEN` | Deploy Worker | Cloudflare dashboard → My Profile → API Tokens |
+| `CLOUDFLARE_ACCOUNT_ID` | Deploy Worker | Cloudflare dashboard → right sidebar |
+| `NPM_TOKEN` | Publish SDK | npmjs.com → Access Tokens → Automation token |
+
 ## Project Structure
 
 ```
 edgestat/
+├── packages/
+│   └── schemas/            # @edgestat/schemas — shared Zod schemas + TypeScript types
 ├── wrangler.jsonc          # Cloudflare bindings config
+├── turbo.json              # Turborepo task graph
 ├── src/
 │   ├── index.ts            # Worker entry (fetch + queue + scheduled)
 │   ├── router.ts           # itty-router setup
 │   ├── routes/             # API handlers
 │   ├── queue/              # Queue consumer
 │   ├── cron/               # Scheduled tasks
-│   ├── lib/                # Types, validation, privacy, aggregation
+│   ├── lib/                # Schemas, types, validation, privacy, aggregation
 │   └── migrations/         # D1 SQL migrations
 ├── dashboard/              # React 19 + Vite + Tailwind 4 SPA
-├── sdk/                    # Tracking snippet + TypeScript SDK
-└── public/                 # Built snippet (s.js)
+├── sdk/                    # TypeScript SDK (published to npm as edgestat-sdk)
+│   └── dist/               # Built SDK: ESM bundle + type declarations
+└── cli/                    # Setup CLI (edgestat-cli)
 ```
 
 ## License
