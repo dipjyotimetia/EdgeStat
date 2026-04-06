@@ -2,7 +2,13 @@
   "name": "edgestat-sdk",
   "version": "0.1.0",
   "description": "TypeScript SDK for the EdgeStat analytics engine",
-  "keywords": ["analytics", "edge", "cloudflare", "tracking", "privacy"],
+  "keywords": [
+    "analytics",
+    "edge",
+    "cloudflare",
+    "tracking",
+    "privacy"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,12 +25,15 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "node build.mjs",
     "build:types": "tsc --project tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build && npm run build:types"
+    "prepublishOnly": "npm run build && npm run build:types",
+    "lint": "eslint src"
   },
   "devDependencies": {
     "@edgestat/schemas": "*",

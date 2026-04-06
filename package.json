@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "npm@11.11.0",
   "workspaces": [
     "packages/schemas",
     "dashboard",
@@ -24,7 +25,8 @@
     "setup": "npm run build --workspace cli && node cli/dist/index.js setup",
     "prepare": "husky",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "turbo run lint"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

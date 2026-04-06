@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "generate:openapi": "tsx ../../scripts/generate-openapi.ts && openapi-typescript src/api/openapi.json -o src/api/schema.d.ts"
+    "generate:openapi": "tsx ../../scripts/generate-openapi.ts && openapi-typescript src/api/openapi.json -o src/api/schema.d.ts",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@edgestat/schemas": "*",
