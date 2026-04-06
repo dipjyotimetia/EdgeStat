@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,8 +7,12 @@ const PLACEHOLDER = 'local-dev-placeholder';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export function findProjectRoot(): string {
-  // cli/src/lib/ → project root is 3 levels up
-  return resolve(__dirname, '..', '..', '..');
+  let dir = dirname(fileURLToPath(import.meta.url));
+  while (dir !== resolve(dir, '..')) {
+    if (existsSync(resolve(dir, 'wrangler.jsonc'))) return dir;
+    dir = resolve(dir, '..');
+  }
+  throw new Error('Could not find project root (no wrangler.jsonc found)');
 }
 
 /** Apply all placeholder patches in a single read-write cycle */

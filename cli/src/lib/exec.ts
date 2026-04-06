@@ -26,8 +26,10 @@ export function exec(command: string, opts: ExecOptions = {}): string {
     }).trim();
   } catch (err) {
     const e = err as Error & { stderr?: string; stdout?: string };
+    // Include only the last 500 chars of stdout — full output can be thousands of lines
+    const stdoutSnippet = e.stdout?.trim().slice(-500);
     throw new ExecError(
-      [e.message, e.stderr, e.stdout].filter(Boolean).join('\n'),
+      [e.message, e.stderr, stdoutSnippet].filter(Boolean).join('\n'),
       e.stderr ?? '',
       e.stdout ?? '',
     );

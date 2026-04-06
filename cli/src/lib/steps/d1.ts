@@ -11,7 +11,7 @@ export async function createD1(projectRoot: string, dryRun: boolean): Promise<St
     const output = exec(`wrangler d1 create ${DB_NAME}`, { cwd: projectRoot });
     let dbId: string | undefined;
     try {
-      dbId = (JSON.parse(output) as { uuid: string }).uuid;
+      dbId = safeJsonParse<{ uuid: string }>(output).uuid;
     } catch {
       const match = output.match(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/);
       dbId = match?.[1];
