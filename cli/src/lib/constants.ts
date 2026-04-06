@@ -1,4 +1,5 @@
 export const RESOURCE_NAMES = {
+  workerName: 'edgestat',
   d1Database: 'edgestat-db',
   kvNamespace: 'KV',
   r2Bucket: 'edgestat-archives',

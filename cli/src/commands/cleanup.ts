@@ -1,6 +1,6 @@
 import { intro, outro, spinner, confirm, cancel, isCancel, note } from '@clack/prompts';
 import { brand, log } from '../lib/colors.js';
-import { findProjectRoot, isAlreadyPatched, resetWranglerConfig } from '../lib/config.js';
+import { findProjectRoot, resetWranglerConfig } from '../lib/config.js';
 import { RESOURCE_NAMES, BINDINGS } from '../lib/constants.js';
 import { exec, errorContains } from '../lib/exec.js';
 
@@ -12,11 +12,6 @@ interface CleanupOptions {
 interface DeleteStep {
   label: string;
   cmd: string;
-}
-
-function deleted(projectRoot: string, step: DeleteStep, dryRun: boolean): void {
-  if (dryRun) return;
-  exec(step.cmd, { cwd: projectRoot });
 }
 
 export async function cleanup(options: CleanupOptions) {
@@ -33,7 +28,7 @@ export async function cleanup(options: CleanupOptions) {
 
   // ─── Confirmation ────────────────────────────────────────────────────
   const resources = [
-    `Worker          ${brand.mint('edgestat')}`,
+    `Worker          ${brand.mint(RESOURCE_NAMES.workerName)}`,
     `Secret          ${brand.mint(RESOURCE_NAMES.secretName)}`,
     `Queue           ${brand.mint(RESOURCE_NAMES.queues[0])}`,
     `Queue (DLQ)     ${brand.mint(RESOURCE_NAMES.queues[1])}`,
@@ -72,7 +67,7 @@ export async function cleanup(options: CleanupOptions) {
       cmd:   `wrangler secret delete ${RESOURCE_NAMES.secretName}`,
     },
     {
-      label: 'Worker',
+      label: `Worker ${RESOURCE_NAMES.workerName}`,
       cmd:   'wrangler delete',
     },
     {
@@ -107,7 +102,7 @@ export async function cleanup(options: CleanupOptions) {
     }
 
     try {
-      deleted(projectRoot, step, dryRun);
+      exec(step.cmd, { cwd: projectRoot });
       s.stop(`${brand.teal('✓')} ${step.label} deleted`);
     } catch (e) {
       // Silently skip resources that don't exist
@@ -142,8 +137,7 @@ export async function cleanup(options: CleanupOptions) {
   }
 
   // ─── Reset wrangler.jsonc ────────────────────────────────────────────
-  if (!dryRun && isAlreadyPatched(projectRoot)) {
-    resetWranglerConfig(projectRoot);
+  if (!dryRun && resetWranglerConfig(projectRoot)) {
     log.success('wrangler.jsonc reset to placeholder state');
   }
 

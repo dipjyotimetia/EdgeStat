@@ -243,7 +243,7 @@ export async function setup(options: SetupOptions) {
 
       s.start('Creating site...');
       try {
-        firstSite = await createFirstSite(workerUrl, masterKey, String(nameInput), String(domainInput));
+        firstSite = await createFirstSite(workerUrl, masterKey, nameInput, domainInput);
         s.stop(`${brand.teal('✓')} Site created ${brand.dim(`(${firstSite.id})`)}`);
       } catch (e) {
         s.stop(`${brand.red('✗')} Site creation failed`);
