@@ -34,3 +34,52 @@ jobs:
         run: npm publish --workspace cli --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release-worker-asset:
+    name: Build and upload worker release asset
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build schemas
+        run: npm run build --workspace packages/schemas
+
+      - name: Create wrangler.jsonc for build
+        # wrangler build needs a valid config — IDs are not used at compile time
+        run: |
+          sed \
+            -e 's|<YOUR_D1_DATABASE_ID>|00000000-0000-0000-0000-000000000000|g' \
+            -e 's|<YOUR_KV_NAMESPACE_ID>|00000000000000000000000000000000|g' \
+            wrangler.example.jsonc > wrangler.jsonc
+
+      - name: Build worker bundle
+        run: npx wrangler build
+        env:
+          # wrangler requires an account token even for local builds
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Package release asset
+        run: |
+          mkdir -p release-staging
+          cp .wrangler/dist/index.js release-staging/worker.js
+          cp -r src/migrations release-staging/migrations
+          tar -czf edgestat-release.tar.gz -C release-staging .
+
+      - name: Upload release asset
+        run: gh release upload ${{ github.event.release.tag_name }} edgestat-release.tar.gz --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
