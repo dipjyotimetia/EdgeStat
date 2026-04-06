@@ -9,9 +9,20 @@ export async function createKV(projectRoot: string, dryRun: boolean): Promise<St
 
   try {
     const output = exec(`wrangler kv namespace create ${KV_NAME}`, { cwd: projectRoot });
-    const match = output.match(/id\s*=\s*"([a-f0-9]+)"/);
-    if (!match) throw new Error('Could not parse KV namespace ID');
-    return { status: 'created', id: match[1] };
+    let kvId: string | undefined;
+
+    // wrangler v4 outputs JSON: { kv_namespaces: [{ binding, id }] }
+    try {
+      const parsed = safeJsonParse<{ kv_namespaces: Array<{ id: string }> }>(output);
+      kvId = parsed.kv_namespaces?.[0]?.id;
+    } catch {
+      // wrangler v3 fallback: id = "abc123..."
+      const match = output.match(/id\s*=\s*"([a-f0-9]+)"/);
+      kvId = match?.[1];
+    }
+
+    if (!kvId) throw new Error('Could not parse KV namespace ID');
+    return { status: 'created', id: kvId };
   } catch (e) {
     if (errorContains(e, 'already exists') || errorContains(e, 'namespace already')) {
       // Try to extract ID from error
