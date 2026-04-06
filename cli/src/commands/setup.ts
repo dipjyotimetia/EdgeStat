@@ -20,6 +20,7 @@ import { setMasterKey, generateMasterKey } from '../lib/steps/secrets.js';
 import { runMigrations } from '../lib/steps/migrations.js';
 import { buildProject } from '../lib/steps/build.js';
 import { deployWorker } from '../lib/steps/deploy.js';
+import { createFirstSite, defaultSiteName, type FirstSiteResult } from '../lib/steps/site.js';
 import type { StepResult } from '../lib/types.js';
 
 interface SetupOptions {
@@ -58,6 +59,7 @@ export async function setup(options: SetupOptions) {
   const projectRoot = findProjectRoot();
   let masterKey = '';
   let workerUrl = '';
+  let firstSite: FirstSiteResult | null = null;
   const completed: string[] = [];
   const s = spinner();
 
@@ -207,6 +209,50 @@ export async function setup(options: SetupOptions) {
     }
   }
 
+  // ─── First site ─────────────────────────────────────────────────────
+  if (!skipDeploy && workerUrl && workerUrl !== 'unknown' && !dryRun) {
+    log.blank();
+
+    const wantsFirstSite = await confirm({
+      message: 'Create your first site now?',
+      initialValue: true,
+    });
+
+    if (!isCancel(wantsFirstSite) && wantsFirstSite) {
+      const suggestedName = defaultSiteName(workerUrl);
+
+      const nameInput = await text({
+        message: 'Site name:',
+        placeholder: suggestedName,
+        defaultValue: suggestedName,
+      });
+      if (isCancel(nameInput)) {
+        cancel('Setup cancelled');
+        process.exit(0);
+      }
+
+      const domainInput = await text({
+        message: 'Site domain:',
+        placeholder: 'example.com',
+        validate: (v) => (!v ? 'Domain is required' : undefined),
+      });
+      if (isCancel(domainInput)) {
+        cancel('Setup cancelled');
+        process.exit(0);
+      }
+
+      s.start('Creating site...');
+      try {
+        firstSite = await createFirstSite(workerUrl, masterKey, String(nameInput), String(domainInput));
+        s.stop(`${brand.teal('✓')} Site created ${brand.dim(`(${firstSite.id})`)}`);
+      } catch (e) {
+        s.stop(`${brand.red('✗')} Site creation failed`);
+        log.error((e as Error).message);
+        // Non-fatal — user can create a site from the dashboard
+      }
+    }
+  }
+
   // ─── Summary ────────────────────────────────────────────────────────
   log.blank();
 
@@ -215,11 +261,24 @@ export async function setup(options: SetupOptions) {
     lines.push(`${brand.dim('URL')}          ${brand.mint(workerUrl)}`);
   }
   lines.push(`${brand.dim('MASTER_KEY')}   ${brand.mint(masterKey)}`);
+  if (firstSite) {
+    lines.push(`${brand.dim('SITE_ID')}      ${brand.mint(firstSite.id)}`);
+  }
   lines.push('');
   lines.push(`${brand.red('!')} Save your MASTER_KEY — it cannot be retrieved later.`);
+
+  if (firstSite) {
+    lines.push('');
+    lines.push(brand.dim('Tracking snippet — add to your website\'s <head>:'));
+    lines.push(`  ${brand.mint(firstSite.snippet)}`);
+  }
+
   lines.push('');
   lines.push(brand.dim('Next steps:'));
-  if (workerUrl && !skipDeploy) {
+  if (firstSite) {
+    lines.push(`  1. Add the tracking snippet to ${brand.mint(firstSite.domain)}`);
+    lines.push(`  2. Open ${brand.mint(workerUrl)} to view your dashboard`);
+  } else if (workerUrl && !skipDeploy) {
     lines.push(`  1. Open ${brand.mint(workerUrl)}`);
     lines.push('  2. Enter your MASTER_KEY');
     lines.push('  3. Create your first site');
