@@ -11,13 +11,13 @@ export async function createKV(projectRoot: string, dryRun: boolean): Promise<St
     // --update-config patches wrangler.jsonc automatically on success (wrangler v4)
     const output = exec(
       `wrangler kv namespace create ${KV_NAME} --update-config --binding ${BINDINGS.kv}`,
-      { cwd: projectRoot },
+      { cwd: projectRoot }
     );
     let kvId: string | undefined;
 
     // wrangler v4: { kv_namespaces: [{ binding, id }] }
     try {
-      const parsed = safeJsonParse<{ kv_namespaces: Array<{ id: string }> }>(output);
+      const parsed = safeJsonParse<{ kv_namespaces: { id: string }[] }>(output);
       kvId = parsed.kv_namespaces?.[0]?.id;
     } catch {
       // wrangler v3 fallback: id = "abc123..."
@@ -35,7 +35,7 @@ export async function createKV(projectRoot: string, dryRun: boolean): Promise<St
 
       // wrangler v4 title = "KV"; wrangler v3 title = "edgestat-KV"
       const listOutput = exec('wrangler kv namespace list', { cwd: projectRoot });
-      const namespaces = safeJsonParse<Array<{ id: string; title: string }>>(listOutput);
+      const namespaces = safeJsonParse<{ id: string; title: string }[]>(listOutput);
       const ns = namespaces.find((n) => n.title === KV_NAME || n.title === `edgestat-${KV_NAME}`);
       if (ns) return { status: 'skipped', id: ns.id };
     }

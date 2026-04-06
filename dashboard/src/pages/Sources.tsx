@@ -11,6 +11,7 @@ export function SourcesPage() {
 
   const { data } = useQuery({
     queryKey: ['sources', id, filters.from, filters.to],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     queryFn: () => getSources(id!, filters.from, filters.to),
   });
 

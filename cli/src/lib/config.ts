@@ -4,8 +4,6 @@ import { fileURLToPath } from 'node:url';
 
 const PLACEHOLDER = 'local-dev-placeholder';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export function findProjectRoot(): string {
   let dir = dirname(fileURLToPath(import.meta.url));
   while (dir !== resolve(dir, '..')) {
@@ -18,7 +16,7 @@ export function findProjectRoot(): string {
 /** Apply all placeholder patches in a single read-write cycle */
 export function patchWranglerConfigBatch(
   projectRoot: string,
-  patches: Array<{ occurrence: number; newId: string }>,
+  patches: { occurrence: number; newId: string }[]
 ): void {
   const configPath = resolve(projectRoot, 'wrangler.jsonc');
   let content = readFileSync(configPath, 'utf-8');
@@ -57,12 +55,9 @@ export function resetWranglerConfig(projectRoot: string): boolean {
 
   content = content.replace(
     /("database_id"\s*:\s*")[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(")/g,
-    `$1${PLACEHOLDER}$2`,
+    `$1${PLACEHOLDER}$2`
   );
-  content = content.replace(
-    /("id"\s*:\s*")[0-9a-f]{32}(")/g,
-    `$1${PLACEHOLDER}$2`,
-  );
+  content = content.replace(/("id"\s*:\s*")[0-9a-f]{32}(")/g, `$1${PLACEHOLDER}$2`);
 
   writeFileSync(configPath, content, 'utf-8');
   return true;

@@ -12,6 +12,7 @@ import { getStats, getTimeseries, getPages, getSources } from '../api/client';
 export function OverviewPage() {
   const { id } = useParams();
   const { filters } = useFilters();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const siteId = id!;
 
   const { data: stats } = useQuery({
@@ -60,11 +61,7 @@ export function OverviewPage() {
           change={stats?.pageviews_change}
           sparklineData={sparklinePageviews}
         />
-        <MetricCard
-          label="Bounce Rate"
-          value={stats?.bounce_rate || 0}
-          format="percent"
-        />
+        <MetricCard label="Bounce Rate" value={stats?.bounce_rate || 0} format="percent" />
         <MetricCard
           label="Avg. Session"
           value={stats?.avg_session_duration || 0}
@@ -90,10 +87,7 @@ export function OverviewPage() {
           <h3 className="text-sm font-mono text-edge-600 uppercase tracking-wider mb-3">
             Traffic Sources
           </h3>
-          <SourcesTable
-            referrers={sourcesData?.referrers || []}
-            utm={sourcesData?.utm || []}
-          />
+          <SourcesTable referrers={sourcesData?.referrers || []} utm={sourcesData?.utm || []} />
         </div>
       </div>
     </div>

@@ -1,7 +1,11 @@
 // ─── Primitive const arrays (canonical source — Zod enums and SDK types derive from these) ──
 
 export const EVENT_TYPES = [
-  'pageview', 'session_start', 'session_end', 'custom', 'web_vital',
+  'pageview',
+  'session_start',
+  'session_end',
+  'custom',
+  'web_vital',
 ] as const;
 
 export const VITAL_NAMES = ['FCP', 'LCP', 'CLS', 'FID', 'INP', 'TTFB'] as const;
@@ -12,10 +16,10 @@ export const INTERVALS = ['hour', 'day'] as const;
 
 // ─── Derived union types ──────────────────────────────────────────────────────
 
-export type EventType  = typeof EVENT_TYPES[number];
-export type VitalName  = typeof VITAL_NAMES[number];
-export type DeviceType = typeof DEVICE_TYPES[number];
-export type Interval   = typeof INTERVALS[number];
+export type EventType = (typeof EVENT_TYPES)[number];
+export type VitalName = (typeof VITAL_NAMES)[number];
+export type DeviceType = (typeof DEVICE_TYPES)[number];
+export type Interval = (typeof INTERVALS)[number];
 
 // ─── Core event payload (replaces SDK's hand-written EventPayload) ────────────
 
@@ -40,7 +44,7 @@ export interface EventPayload {
 export interface ValidationErrorResponse {
   error: 'validation_failed';
   status: 400;
-  issues: Array<{ path: string; message: string; code: string }>;
+  issues: { path: string; message: string; code: string }[];
 }
 
 export interface UnauthorizedErrorResponse {

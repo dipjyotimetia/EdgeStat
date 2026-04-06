@@ -13,11 +13,6 @@
 
   const endpoint = new URL(s.src).origin + '/v1/events';
   const queue: Record<string, unknown>[] = [];
-  let sessionStart = Date.now();
-
-  function getPath(): string {
-    return location.pathname + location.search;
-  }
 
   function getUtm(key: string): string | undefined {
     try {
@@ -50,7 +45,9 @@
     if (n.sendBeacon) {
       n.sendBeacon(endpoint, body);
     } else {
-      fetch(endpoint, { method: 'POST', body, keepalive: true }).catch(() => {});
+      fetch(endpoint, { method: 'POST', body, keepalive: true }).catch(() => {
+        /* best-effort flush */
+      });
     }
   }
 
@@ -59,13 +56,19 @@
 
   // Web Vitals via PerformanceObserver
   if ('PerformanceObserver' in w) {
-    const vitals = ['largest-contentful-paint', 'first-contentful-paint', 'layout-shift', 'first-input', 'event'];
+    const vitals = [
+      'largest-contentful-paint',
+      'first-contentful-paint',
+      'layout-shift',
+      'first-input',
+      'event',
+    ];
     const vitalMap: Record<string, string> = {
       'largest-contentful-paint': 'LCP',
       'first-contentful-paint': 'FCP',
       'layout-shift': 'CLS',
       'first-input': 'FID',
-      'event': 'INP',
+      event: 'INP',
     };
 
     let clsValue = 0;
@@ -86,9 +89,10 @@
                 track('web_vital', { vital_name: 'INP', vital_value: entry.duration });
               }
             } else {
-              const value = name === 'FID'
-                ? (entry as PerformanceEntry & { processingStart?: number }).processingStart! - entry.startTime
-                : entry.startTime;
+              const fidEntry = entry as PerformanceEntry & { processingStart?: number };
+              // FID always has processingStart set; the non-null assertion is safe here
+              const processingStart = fidEntry.processingStart ?? entry.startTime;
+              const value = name === 'FID' ? processingStart - entry.startTime : entry.startTime;
               track('web_vital', { vital_name: name, vital_value: value });
             }
           }

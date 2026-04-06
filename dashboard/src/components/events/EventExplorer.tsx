@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getEvents, type EventData } from '../../api/client';
+import { getEvents } from '../../api/client';
 
 interface EventExplorerProps {
   siteId: string;
@@ -41,9 +41,21 @@ export function EventExplorer({ siteId, from, to }: EventExplorerProps) {
         <table className="w-full" role="table">
           <thead>
             <tr className="border-b border-edge-800">
-              <th className="text-left text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3" scope="col">Event Name</th>
-              <th className="text-right text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3" scope="col">Count</th>
-              <th className="w-10 px-3" scope="col"><span className="sr-only">Expand</span></th>
+              <th
+                className="text-left text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3"
+                scope="col"
+              >
+                Event Name
+              </th>
+              <th
+                className="text-right text-xs font-mono text-edge-700 uppercase tracking-wider px-5 py-3"
+                scope="col"
+              >
+                Count
+              </th>
+              <th className="w-10 px-3" scope="col">
+                <span className="sr-only">Expand</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -58,7 +70,9 @@ export function EventExplorer({ siteId, from, to }: EventExplorerProps) {
                     {event.count.toLocaleString()}
                   </td>
                   <td className="px-3 text-edge-700">
-                    <span className={`inline-block transition-transform ${expandedRow === i ? 'rotate-90' : ''}`}>
+                    <span
+                      className={`inline-block transition-transform ${expandedRow === i ? 'rotate-90' : ''}`}
+                    >
                       &#9654;
                     </span>
                   </td>

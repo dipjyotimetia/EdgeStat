@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
 export interface Filters {
@@ -43,7 +43,7 @@ export function useFilters() {
         return next;
       });
     },
-    [setSearchParams],
+    [setSearchParams]
   );
 
   const setDateRange = useCallback(
@@ -55,7 +55,7 @@ export function useFilters() {
         return next;
       });
     },
-    [setSearchParams],
+    [setSearchParams]
   );
 
   const clearFilters = useCallback(() => {

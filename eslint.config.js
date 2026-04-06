@@ -7,12 +7,7 @@ import prettierConfig from 'eslint-config-prettier';
 export default tseslint.config(
   // --- Ignores ---
   {
-    ignores: [
-      '**/dist/**',
-      '**/node_modules/**',
-      '**/*.d.ts',
-      'worker-configuration.d.ts',
-    ],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/*.d.ts', 'worker-configuration.d.ts'],
   },
 
   // --- Layer 1: All TypeScript files ---
@@ -26,17 +21,16 @@ export default tseslint.config(
     ],
     languageOptions: {
       parserOptions: {
-        project: './tsconfig.base.json',
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
 
+  // Layer 2 inherits parserOptions from Layer 1 via tseslint.config() merge
   // --- Layer 2: Dashboard only (React) ---
   {
     files: ['dashboard/src/**/*.{ts,tsx}'],
-    extends: [
-      reactPlugin.configs['recommended-type-checked'],
-    ],
-  },
+    extends: [reactPlugin.configs['recommended-type-checked']],
+  }
 );

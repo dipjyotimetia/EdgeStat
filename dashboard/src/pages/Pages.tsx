@@ -11,6 +11,7 @@ export function PagesPage() {
 
   const { data } = useQuery({
     queryKey: ['pages', id, filters.from, filters.to, 50],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     queryFn: () => getPages(id!, filters.from, filters.to, 50),
   });
 

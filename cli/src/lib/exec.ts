@@ -8,8 +8,8 @@ export interface ExecOptions {
 export class ExecError extends Error {
   constructor(
     message: string,
-    public readonly stderr: string = '',
-    public readonly stdout: string = '',
+    public readonly stderr = '',
+    public readonly stdout = ''
   ) {
     super(message);
     this.name = 'ExecError';
@@ -31,7 +31,7 @@ export function exec(command: string, opts: ExecOptions = {}): string {
     throw new ExecError(
       [e.message, e.stderr, stdoutSnippet].filter(Boolean).join('\n'),
       e.stderr ?? '',
-      e.stdout ?? '',
+      e.stdout ?? ''
     );
   }
 }
@@ -54,9 +54,10 @@ export function extractUuidFromError(e: unknown): string | undefined {
 export function safeJsonParse<T>(text: string): T {
   const arrayStart = text.indexOf('[');
   const objectStart = text.indexOf('{');
-  const start = arrayStart >= 0 && objectStart >= 0
-    ? Math.min(arrayStart, objectStart)
-    : Math.max(arrayStart, objectStart);
+  const start =
+    arrayStart >= 0 && objectStart >= 0
+      ? Math.min(arrayStart, objectStart)
+      : Math.max(arrayStart, objectStart);
 
   if (start < 0) throw new Error(`No JSON found in output: ${text.slice(0, 200)}`);
   return JSON.parse(text.slice(start)) as T;

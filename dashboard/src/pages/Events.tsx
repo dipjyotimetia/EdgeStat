@@ -10,6 +10,7 @@ export function EventsPage() {
   return (
     <div>
       <Header title="Custom Events" />
+      {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
       <EventExplorer siteId={id!} from={filters.from} to={filters.to} />
     </div>
   );

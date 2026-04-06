@@ -8,6 +8,7 @@ export function FunnelsPage() {
   return (
     <div>
       <Header title="Funnels" />
+      {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
       <FunnelBuilder siteId={id!} />
     </div>
   );

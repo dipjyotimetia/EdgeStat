@@ -1,13 +1,4 @@
-import {
-  intro,
-  outro,
-  spinner,
-  note,
-  confirm,
-  text,
-  cancel,
-  isCancel,
-} from '@clack/prompts';
+import { intro, outro, spinner, note, confirm, text, cancel, isCancel } from '@clack/prompts';
 import { brand, log } from '../lib/colors.js';
 import { findProjectRoot, patchWranglerConfigBatch, isAlreadyPatched } from '../lib/config.js';
 import { RESOURCE_NAMES } from '../lib/constants.js';
@@ -57,7 +48,7 @@ export async function setup(options: SetupOptions) {
   }
 
   const projectRoot = findProjectRoot();
-  let masterKey = '';
+  let masterKey: string;
   let workerUrl = '';
   let firstSite: FirstSiteResult | null = null;
   const completed: string[] = [];
@@ -66,22 +57,26 @@ export async function setup(options: SetupOptions) {
   // ─── Resource provisioning ──────────────────────────────────────────
   const steps: StepDef[] = [
     {
-      name: 'd1', label: 'D1 database',
+      name: 'd1',
+      label: 'D1 database',
       manualCmd: `wrangler d1 create ${RESOURCE_NAMES.d1Database}`,
       run: () => createD1(projectRoot, dryRun),
     },
     {
-      name: 'kv', label: 'KV namespace',
+      name: 'kv',
+      label: 'KV namespace',
       manualCmd: `wrangler kv namespace create ${RESOURCE_NAMES.kvNamespace}`,
       run: () => createKV(projectRoot, dryRun),
     },
     {
-      name: 'r2', label: 'R2 bucket',
+      name: 'r2',
+      label: 'R2 bucket',
       manualCmd: `wrangler r2 bucket create ${RESOURCE_NAMES.r2Bucket}`,
       run: () => createR2(projectRoot, dryRun),
     },
     {
-      name: 'queues', label: 'Queues',
+      name: 'queues',
+      label: 'Queues',
       manualCmd: `wrangler queues create ${RESOURCE_NAMES.queues[0]}`,
       run: () => createQueues(projectRoot, dryRun),
     },
@@ -92,15 +87,16 @@ export async function setup(options: SetupOptions) {
   // wrangler.jsonc placeholder order: occurrence 0 = D1, occurrence 1 = KV
   const D1_PLACEHOLDER_OCCURRENCE = 0;
   const KV_PLACEHOLDER_OCCURRENCE = 1;
-  const configPatches: Array<{ occurrence: number; newId: string }> = [];
+  const configPatches: { occurrence: number; newId: string }[] = [];
 
   for (const step of steps) {
     s.start(`Creating ${step.label}...`);
     try {
       const result = await step.run();
-      const detail = result.id && result.id !== 'dry-run'
-        ? ` ${brand.dim(`(${result.id.slice(0, 12)}...)`)}`
-        : '';
+      const detail =
+        result.id && result.id !== 'dry-run'
+          ? ` ${brand.dim(`(${result.id.slice(0, 12)}...)`)}`
+          : '';
 
       if (result.status === 'created') {
         s.stop(`${brand.teal('✓')} ${step.label} created${detail}`);
@@ -110,8 +106,10 @@ export async function setup(options: SetupOptions) {
 
       // Only patch manually when resource already existed (--update-config handles new ones)
       if (result.status === 'skipped' && result.id && result.id !== 'dry-run') {
-        if (step.name === 'd1') configPatches.push({ occurrence: D1_PLACEHOLDER_OCCURRENCE, newId: result.id });
-        if (step.name === 'kv') configPatches.push({ occurrence: KV_PLACEHOLDER_OCCURRENCE, newId: result.id });
+        if (step.name === 'd1')
+          configPatches.push({ occurrence: D1_PLACEHOLDER_OCCURRENCE, newId: result.id });
+        if (step.name === 'kv')
+          configPatches.push({ occurrence: KV_PLACEHOLDER_OCCURRENCE, newId: result.id });
       }
 
       completed.push(step.name);
@@ -269,7 +267,7 @@ export async function setup(options: SetupOptions) {
 
   if (firstSite) {
     lines.push('');
-    lines.push(brand.dim('Tracking snippet — add to your website\'s <head>:'));
+    lines.push(brand.dim("Tracking snippet — add to your website's <head>:"));
     lines.push(`  ${brand.mint(firstSite.snippet)}`);
   }
 

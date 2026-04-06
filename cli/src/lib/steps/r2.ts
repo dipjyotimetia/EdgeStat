@@ -15,7 +15,8 @@ export async function createR2(projectRoot: string, dryRun: boolean): Promise<St
     if (errorContains(e, 'enable r2') || errorContains(e, '10042')) {
       throw new Error(
         'R2 is not enabled on your account.\n' +
-        'Enable it at: https://dash.cloudflare.com/?to=/:account/r2',
+          'Enable it at: https://dash.cloudflare.com/?to=/:account/r2',
+        { cause: e }
       );
     }
 
