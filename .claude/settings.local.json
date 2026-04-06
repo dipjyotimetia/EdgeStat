@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_cloudflare_cloudflare-docs__search_cloudflare_documentation",
+      "Bash(npm install:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:openapi-ts.dev)",
+      "WebFetch(domain:docs.scalar.com)",
+      "WebFetch(domain:zod-openapi.dev)",
+      "WebFetch(domain:scalar.com)",
+      "WebFetch(domain:npm.im)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm info:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx openapi-typescript:*)",
+      "Bash(npm ls:*)",
+      "WebSearch",
+      "Bash(find:*)",
+      "WebFetch(domain:bomb.sh)",
+      "WebFetch(domain:tj.github.io)",
+      "WebFetch(domain:developers.cloudflare.com)"
+    ]
+  }
+}

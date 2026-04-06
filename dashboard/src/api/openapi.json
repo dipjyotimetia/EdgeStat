@@ -1,0 +1,1126 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EdgeStat API",
+    "version": "0.1.0",
+    "description": "Privacy-first analytics engine on Cloudflare. Analytics at the edge. Owned by you."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current deployment"
+    }
+  ],
+  "paths": {
+    "/v1/events": {
+      "post": {
+        "operationId": "ingestEvents",
+        "summary": "Ingest analytics events",
+        "tags": [
+          "Ingest"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown site",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites": {
+      "get": {
+        "operationId": "listSites",
+        "summary": "List all sites",
+        "tags": [
+          "Sites"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSitesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createSite",
+        "summary": "Create a new site",
+        "tags": [
+          "Sites"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSiteBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSiteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/stats": {
+      "get": {
+        "operationId": "getStats",
+        "summary": "Overview statistics",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/timeseries": {
+      "get": {
+        "operationId": "getTimeseries",
+        "summary": "Time-bucketed breakdown",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "hour",
+                "day"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeseriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/pages": {
+      "get": {
+        "operationId": "getPages",
+        "summary": "Top pages",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/sources": {
+      "get": {
+        "operationId": "getSources",
+        "summary": "Traffic sources",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/events": {
+      "get": {
+        "operationId": "getEvents",
+        "summary": "Custom events",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/realtime": {
+      "get": {
+        "operationId": "getRealtime",
+        "summary": "Active visitors",
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RealtimeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{siteId}/funnels": {
+      "get": {
+        "operationId": "listFunnels",
+        "summary": "List funnels",
+        "tags": [
+          "Funnels"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FunnelsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createFunnel",
+        "summary": "Create funnel",
+        "tags": [
+          "Funnels"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFunnelBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFunnelResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "IngestBody": {
+        "type": "object",
+        "properties": {
+          "site_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "events": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SingleEvent"
+            }
+          }
+        },
+        "required": [
+          "site_id",
+          "events"
+        ],
+        "additionalProperties": false,
+        "description": "Batch of events to ingest"
+      },
+      "SingleEvent": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "pageview",
+              "session_start",
+              "session_end",
+              "custom",
+              "web_vital"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referrer": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "utm_source": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "utm_medium": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "utm_campaign": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "screen_width": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "screen_height": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "event_name": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "event_props": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 256
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "vital_name": {
+            "type": "string",
+            "enum": [
+              "FCP",
+              "LCP",
+              "CLS",
+              "FID",
+              "INP",
+              "TTFB"
+            ]
+          },
+          "vital_value": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "description": "A single analytics event"
+      },
+      "CreateSiteBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "name",
+          "domain"
+        ],
+        "additionalProperties": false
+      },
+      "CreateFunnelBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "steps": {
+            "minItems": 2,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "url",
+                    "event"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                }
+              },
+              "required": [
+                "name",
+                "type",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "name",
+          "steps"
+        ],
+        "additionalProperties": false
+      },
+      "IngestResponse": {
+        "type": "object",
+        "properties": {
+          "queued": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "queued"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "ListSitesResponse": {
+        "type": "object",
+        "properties": {
+          "sites": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Site"
+            }
+          }
+        },
+        "required": [
+          "sites"
+        ],
+        "additionalProperties": false
+      },
+      "Site": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "api_key": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "api_key",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "CreateSiteResponse": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "$ref": "#/components/schemas/Site"
+          },
+          "snippet": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "site",
+          "snippet"
+        ],
+        "additionalProperties": false
+      },
+      "StatsResponse": {
+        "type": "object",
+        "properties": {
+          "visitors": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "pageviews": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "sessions": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "bounce_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "avg_session_duration": {
+            "type": "number"
+          },
+          "visitors_change": {
+            "type": "number"
+          },
+          "pageviews_change": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "visitors",
+          "pageviews",
+          "sessions",
+          "bounce_rate",
+          "avg_session_duration",
+          "visitors_change",
+          "pageviews_change"
+        ],
+        "additionalProperties": false
+      },
+      "TimeseriesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeseriesPoint"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "TimeseriesPoint": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string"
+          },
+          "visitors": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "pageviews": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "bucket",
+          "visitors",
+          "pageviews"
+        ],
+        "additionalProperties": false
+      },
+      "PagesResponse": {
+        "type": "object",
+        "properties": {
+          "pages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PageStats"
+            }
+          }
+        },
+        "required": [
+          "pages"
+        ],
+        "additionalProperties": false
+      },
+      "PageStats": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "views": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "visitors": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "avg_time": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "url",
+          "views",
+          "visitors",
+          "avg_time"
+        ],
+        "additionalProperties": false
+      },
+      "SourcesResponse": {
+        "type": "object",
+        "properties": {
+          "referrers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceStats"
+            }
+          },
+          "utm": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceStats"
+            }
+          }
+        },
+        "required": [
+          "referrers",
+          "utm"
+        ],
+        "additionalProperties": false
+      },
+      "SourceStats": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "visitors": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "pageviews": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "source",
+          "visitors",
+          "pageviews"
+        ],
+        "additionalProperties": false
+      },
+      "EventsResponse": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomEvent"
+            }
+          }
+        },
+        "required": [
+          "events"
+        ],
+        "additionalProperties": false
+      },
+      "CustomEvent": {
+        "type": "object",
+        "properties": {
+          "event_name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "properties": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "event_name",
+          "count",
+          "properties"
+        ],
+        "additionalProperties": false
+      },
+      "RealtimeResponse": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "active"
+        ],
+        "additionalProperties": false
+      },
+      "FunnelsResponse": {
+        "type": "object",
+        "properties": {
+          "funnels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Funnel"
+            }
+          }
+        },
+        "required": [
+          "funnels"
+        ],
+        "additionalProperties": false
+      },
+      "Funnel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FunnelStep"
+            }
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "steps"
+        ],
+        "additionalProperties": false
+      },
+      "FunnelStep": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "url",
+              "event"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "CreateFunnelResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FunnelStep"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "steps"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Master API key"
+      }
+    }
+  }
+}

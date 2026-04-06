@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --color-edge-950: #050B14;
+  --color-edge-900: #0A2540;
+  --color-edge-800: #0D3D30;
+  --color-edge-700: #00D4AA;
+  --color-edge-600: #00FFD1;
+  --color-edge-500: #7FFFD4;
+  --color-edge-400: #E2F9F5;
+  --color-edge-300: #F0FDF9;
+  --color-edge-border: #1E4D44;
+  --color-edge-muted: #1E6B5A;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+body {
+  font-family: var(--font-family-mono);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-edge-950);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-edge-800);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-edge-700);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-edge-700);
+  outline-offset: 2px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
