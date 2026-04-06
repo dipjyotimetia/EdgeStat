@@ -85,12 +85,11 @@ export async function setup(options: SetupOptions) {
     },
   ];
 
-  // wrangler.jsonc placeholder order — must match the file layout:
-  //   occurrence 0 → d1_databases[0].database_id
-  //   occurrence 1 → kv_namespaces[0].id
+  // Fallback config patches: only needed when a resource already existed and
+  // --update-config never ran (fresh creates are patched by wrangler directly).
+  // wrangler.jsonc placeholder order: occurrence 0 = D1, occurrence 1 = KV
   const D1_PLACEHOLDER_OCCURRENCE = 0;
   const KV_PLACEHOLDER_OCCURRENCE = 1;
-
   const configPatches: Array<{ occurrence: number; newId: string }> = [];
 
   for (const step of steps) {
@@ -107,12 +106,10 @@ export async function setup(options: SetupOptions) {
         s.stop(`${brand.teal('✓')} ${step.label} ${brand.dim('(already exists)')}`);
       }
 
-      // Collect IDs for batched config patch
-      if (step.name === 'd1' && result.id && result.id !== 'dry-run') {
-        configPatches.push({ occurrence: D1_PLACEHOLDER_OCCURRENCE, newId: result.id });
-      }
-      if (step.name === 'kv' && result.id && result.id !== 'dry-run') {
-        configPatches.push({ occurrence: KV_PLACEHOLDER_OCCURRENCE, newId: result.id });
+      // Only patch manually when resource already existed (--update-config handles new ones)
+      if (result.status === 'skipped' && result.id && result.id !== 'dry-run') {
+        if (step.name === 'd1') configPatches.push({ occurrence: D1_PLACEHOLDER_OCCURRENCE, newId: result.id });
+        if (step.name === 'kv') configPatches.push({ occurrence: KV_PLACEHOLDER_OCCURRENCE, newId: result.id });
       }
 
       completed.push(step.name);
@@ -124,7 +121,7 @@ export async function setup(options: SetupOptions) {
     }
   }
 
-  // Batch-patch wrangler.jsonc with all collected IDs
+  // Apply fallback patches (only runs on re-setup when resources pre-existed)
   if (configPatches.length > 0 && !isAlreadyPatched(projectRoot)) {
     patchWranglerConfigBatch(projectRoot, configPatches);
     log.success('wrangler.jsonc updated with resource IDs');
