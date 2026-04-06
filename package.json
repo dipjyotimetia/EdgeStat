@@ -3,17 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "dashboard",
+    "sdk",
+    "cli"
+  ],
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "npm run build && wrangler deploy",
-    "build": "npm run generate:openapi && npm run build:dashboard && npm run build:snippet && cp public/s.js dashboard/dist/s.js",
-    "build:dashboard": "cd dashboard && npm run build",
-    "build:snippet": "cd sdk && npm run build",
-    "generate:openapi": "npx tsx scripts/generate-openapi.ts && cd dashboard && npx openapi-typescript src/api/openapi.json -o src/api/schema.d.ts",
+    "build": "turbo run build --filter=edgestat-dashboard --filter=edgestat-sdk",
+    "build:dashboard": "turbo run build --filter=edgestat-dashboard",
+    "build:snippet": "turbo run build --filter=edgestat-sdk",
+    "generate:openapi": "turbo run generate:openapi --filter=edgestat-dashboard",
+    "check:schema": "npm run generate:openapi && git diff --exit-code dashboard/src/api/schema.d.ts dashboard/src/api/openapi.json",
     "db:migrate": "wrangler d1 migrations apply edgestat-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply edgestat-db --remote",
     "types": "wrangler types",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "turbo run typecheck",
     "setup": "npx tsx cli/src/index.ts setup"
   },
   "dependencies": {
@@ -24,6 +30,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260405.1",
+    "turbo": "^2.9.4",
     "typescript": "^5",
     "wrangler": "^4"
   }

@@ -23,7 +23,11 @@
       "Bash(find:*)",
       "WebFetch(domain:bomb.sh)",
       "WebFetch(domain:tj.github.io)",
-      "WebFetch(domain:developers.cloudflare.com)"
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Bash(ls:*)",
+      "Bash(npm audit:*)",
+      "WebFetch(domain:turborepo.dev)",
+      "WebFetch(domain:turborepo.ai)"
     ]
   }
 }

@@ -21,9 +21,9 @@ if (gzipped.length > 2048) {
   console.warn(`WARNING: Snippet exceeds 2KB gzipped target (${gzipped.length} bytes)`);
 }
 
-// Write to public/s.js
-mkdirSync('../public', { recursive: true });
-writeFileSync('../public/s.js', code);
+// Write directly to dashboard/dist/s.js (served as a Worker asset at /s.js)
+mkdirSync('../dashboard/dist', { recursive: true });
+writeFileSync('../dashboard/dist/s.js', code);
 
 // Also build the full SDK
 buildSync({

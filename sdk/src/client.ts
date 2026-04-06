@@ -7,6 +7,12 @@ export interface EdgeStatConfig {
   maxBatchSize?: number;
 }
 
+/**
+ * Event payload for the EdgeStat SDK.
+ * IMPORTANT: This interface must stay in sync with `singleEventSchema` in
+ * `src/lib/schemas.ts`. All field types and optionality must match.
+ * Run `npm run check:schema` from root after changing either.
+ */
 export interface EventPayload {
   type: 'pageview' | 'custom' | 'web_vital' | 'session_start' | 'session_end';
   url?: string;
@@ -16,7 +22,7 @@ export interface EventPayload {
   utm_campaign?: string;
   event_name?: string;
   event_props?: Record<string, string | number>;
-  vital_name?: string;
+  vital_name?: 'FCP' | 'LCP' | 'CLS' | 'FID' | 'INP' | 'TTFB';
   vital_value?: number;
   screen_width?: number;
   screen_height?: number;
