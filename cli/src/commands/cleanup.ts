@@ -69,7 +69,11 @@ export async function cleanup(options: CleanupOptions) {
     }
   }
 
-  const projectRoot = findProjectRoot();
+  const projectRoot = findProjectRoot(process.cwd());
+  if (!projectRoot) {
+    log.error('No wrangler.jsonc found — nothing to clean up. Run edgestat setup first.');
+    process.exit(1);
+  }
   const s = spinner();
 
   // ─── Pre-flight: resolve real IDs before the step loop ───────────────
