@@ -67,7 +67,7 @@ Browser/SDK                     Cloudflare Edge
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/edgestat.git
+git clone https://github.com/dipjyotimetia/edgestat.git
 cd edgestat
 npm install
 cd dashboard && npm install && cd ..
