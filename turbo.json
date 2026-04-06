@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "generate:openapi": {
-      "inputs": ["../../src/lib/schemas.ts", "../../scripts/generate-openapi.ts"],
+      "inputs": ["../src/lib/schemas.ts", "../scripts/generate-openapi.ts"],
       "outputs": ["src/api/openapi.json", "src/api/schema.d.ts"],
       "cache": true
     },
