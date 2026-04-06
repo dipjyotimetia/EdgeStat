@@ -10,10 +10,11 @@ const PLACEHOLDER = 'local-dev-placeholder';
  */
 export function findProjectRoot(startDir?: string): string | null {
   let dir = resolve(startDir ?? process.cwd());
-  const root = resolve('/');
-  while (dir !== root) {
+  while (true) {
     if (existsSync(resolve(dir, 'wrangler.jsonc'))) return dir;
-    dir = resolve(dir, '..');
+    const parent = resolve(dir, '..');
+    if (parent === dir) break; // reached filesystem root
+    dir = parent;
   }
   return null;
 }
@@ -75,17 +76,9 @@ export function generateWranglerConfig(dir: string, mode: WranglerConfigMode): v
         }
       : base;
 
-  // Insert assets after compatibility_date for project mode via key ordering
-  const ordered =
-    mode === 'project'
-      ? (() => {
-          const { $schema, name, main, compatibility_date, assets, ...rest } =
-            withAssets as typeof withAssets & { assets: object };
-          return { $schema, name, main, compatibility_date, assets, ...rest };
-        })()
-      : withAssets;
-
-  writeFileSync(configPath, JSON.stringify(ordered, null, 2) + '\n', 'utf-8');
+  // JSON.stringify preserves key insertion order (ES2015+ spec); assets placed after compatibility_date
+  // Note: output is strict JSON (no trailing commas/comments) — wrangler accepts both JSON and JSONC
+  writeFileSync(configPath, JSON.stringify(withAssets, null, 2) + '\n', 'utf-8');
 }
 
 /** Apply all placeholder patches in a single read-write cycle */
