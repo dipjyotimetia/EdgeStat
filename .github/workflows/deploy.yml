@@ -10,6 +10,9 @@ jobs:
     name: Deploy to Cloudflare Workers
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -22,6 +25,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate wrangler.jsonc from secrets
+        run: |
+          sed \
+            -e 's|<YOUR_D1_DATABASE_ID>|${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}|g' \
+            -e 's|<YOUR_KV_NAMESPACE_ID>|${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}|g' \
+            wrangler.example.jsonc > wrangler.jsonc
 
       - name: Build schemas
         run: npm run build --workspace packages/schemas

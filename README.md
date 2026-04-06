@@ -72,13 +72,21 @@ cd edgestat
 npm install
 ```
 
-### 2. Login to Cloudflare
+### 2. Copy the Wrangler config
+
+```bash
+cp wrangler.example.jsonc wrangler.jsonc
+```
+
+> `wrangler.jsonc` is gitignored. The setup step below fills in your real resource IDs automatically.
+
+### 3. Login to Cloudflare
 
 ```bash
 npx wrangler login
 ```
 
-### 3. Run setup (one command)
+### 4. Run setup (one command)
 
 ```bash
 npm run setup
@@ -94,7 +102,7 @@ npm run setup -- --dry-run       # Preview commands without executing
 npm run setup -- --skip-deploy   # Provision resources only, skip build/deploy
 ```
 
-### 4. Open dashboard
+### 5. Open dashboard
 
 Visit your Worker URL. The onboarding wizard will guide you through:
 
@@ -223,11 +231,13 @@ The dashboard dev server proxies `/v1`, `/api`, and `/sse` to the Worker at
 
 Set these in **GitHub → Settings → Secrets and variables → Actions**:
 
-| Secret                  | Used by       | How to get it                                  |
-| ----------------------- | ------------- | ---------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Deploy Worker | Cloudflare dashboard → My Profile → API Tokens |
-| `CLOUDFLARE_ACCOUNT_ID` | Deploy Worker | Cloudflare dashboard → right sidebar           |
-| `NPM_TOKEN`             | Publish SDK   | npmjs.com → Access Tokens → Automation token   |
+| Secret                       | Used by         | How to get it                                         |
+| ---------------------------- | --------------- | ----------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`       | Deploy Worker   | Cloudflare dashboard → My Profile → API Tokens        |
+| `CLOUDFLARE_ACCOUNT_ID`      | Deploy Worker   | Cloudflare dashboard → right sidebar                  |
+| `CLOUDFLARE_D1_DATABASE_ID`  | Deploy Worker   | Output of `wrangler d1 list` or your `wrangler.jsonc` |
+| `CLOUDFLARE_KV_NAMESPACE_ID` | Deploy Worker   | Output of `wrangler kv namespace list`                |
+| `NPM_TOKEN`                  | Publish SDK/CLI | npmjs.com → Access Tokens → Automation token          |
 
 ## Project Structure
 
@@ -251,6 +261,12 @@ edgestat/
 └── cli/                    # Setup CLI (edgestat-cli)
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before contributing.
+
+Report security issues privately — see [SECURITY.md](SECURITY.md).
+
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE)

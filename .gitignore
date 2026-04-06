@@ -4,6 +4,9 @@ packages/schemas/dist/
 .turbo/
 .wrangler/
 .dev.vars
+.env
+.env.*
+!.env.example
 worker-configuration.d.ts
 *.log
 .DS_Store
@@ -13,3 +16,4 @@ sdk/node_modules/
 cli/node_modules/
 public/s.js
 public/edgestat.mjs
+wrangler.jsonc

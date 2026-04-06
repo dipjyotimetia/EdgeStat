@@ -1,8 +1,10 @@
 import { intro, outro, spinner, confirm, cancel, isCancel, note } from '@clack/prompts';
 import { brand, log } from '../lib/colors.js';
-import { findProjectRoot, resetWranglerConfig } from '../lib/config.js';
-import { RESOURCE_NAMES, BINDINGS } from '../lib/constants.js';
-import { exec, errorContains } from '../lib/exec.js';
+import { findProjectRoot, resetWranglerConfig, patchWranglerConfigBatch } from '../lib/config.js';
+import { RESOURCE_NAMES } from '../lib/constants.js';
+import { exec, errorContains, ResourceNotFoundError } from '../lib/exec.js';
+import { lookupD1 } from '../lib/steps/d1.js';
+import { lookupKV } from '../lib/steps/kv.js';
 
 interface CleanupOptions {
   force?: boolean;
@@ -11,7 +13,20 @@ interface CleanupOptions {
 
 interface DeleteStep {
   label: string;
-  cmd: string;
+  fn: () => void;
+}
+
+function isNotFound(e: unknown): boolean {
+  // Exclude shell-level "command not found" — only match Cloudflare resource-not-found errors
+  if (errorContains(e, 'command not found') || errorContains(e, 'No such file or directory')) {
+    return false;
+  }
+  return (
+    errorContains(e, 'not found') ||
+    errorContains(e, 'does not exist') ||
+    errorContains(e, '10007') || // Worker not found
+    errorContains(e, '10006') // Resource not found
+  );
 }
 
 export async function cleanup(options: CleanupOptions) {
@@ -57,38 +72,59 @@ export async function cleanup(options: CleanupOptions) {
   const projectRoot = findProjectRoot();
   const s = spinner();
 
-  // ─── Delete steps ────────────────────────────────────────────────────
-  // Secrets must be deleted before the Worker (wrangler requires Worker to exist).
-  // Queues, D1, KV, R2 are independent — order doesn't matter.
+  // ─── Pre-flight: resolve real IDs before the step loop ───────────────
+  // wrangler.jsonc may have placeholder IDs if setup was interrupted.
+  // wrangler d1 delete reads database_id from the config, so we patch it upfront.
+  const d1Id = !dryRun ? lookupD1(RESOURCE_NAMES.d1Database, projectRoot) : undefined;
+  const kvId = !dryRun ? lookupKV(RESOURCE_NAMES.kvNamespace, projectRoot) : undefined;
+  if (d1Id) patchWranglerConfigBatch(projectRoot, [{ occurrence: 0, newId: d1Id }]);
 
+  // ─── Delete steps ────────────────────────────────────────────────────
+  // Ordered to satisfy Cloudflare's dependency constraints:
+  // consumer binding must be removed before the Worker can be deleted,
+  // and the Worker must be gone before its queue/DLQ can be deleted.
   const steps: DeleteStep[] = [
     {
       label: `Secret ${RESOURCE_NAMES.secretName}`,
-      cmd: `wrangler secret delete ${RESOURCE_NAMES.secretName}`,
+      fn: () => exec(`wrangler secret delete ${RESOURCE_NAMES.secretName}`, { cwd: projectRoot }),
+    },
+    {
+      label: `Queue consumer binding (${RESOURCE_NAMES.queues[0]} ← ${RESOURCE_NAMES.workerName})`,
+      fn: () =>
+        exec(
+          `wrangler queues consumer remove ${RESOURCE_NAMES.queues[0]} ${RESOURCE_NAMES.workerName}`,
+          { cwd: projectRoot }
+        ),
     },
     {
       label: `Worker ${RESOURCE_NAMES.workerName}`,
-      cmd: 'wrangler delete',
+      fn: () => exec('wrangler delete', { cwd: projectRoot }),
     },
     {
       label: `Queue ${RESOURCE_NAMES.queues[1]}`,
-      cmd: `wrangler queues delete ${RESOURCE_NAMES.queues[1]}`,
+      fn: () => exec(`wrangler queues delete ${RESOURCE_NAMES.queues[1]}`, { cwd: projectRoot }),
     },
     {
       label: `Queue ${RESOURCE_NAMES.queues[0]}`,
-      cmd: `wrangler queues delete ${RESOURCE_NAMES.queues[0]}`,
+      fn: () => exec(`wrangler queues delete ${RESOURCE_NAMES.queues[0]}`, { cwd: projectRoot }),
     },
     {
       label: `D1 database ${RESOURCE_NAMES.d1Database}`,
-      cmd: `wrangler d1 delete ${RESOURCE_NAMES.d1Database} -y`,
+      fn: () => {
+        if (!d1Id) throw new ResourceNotFoundError('D1 database not found');
+        exec(`wrangler d1 delete ${RESOURCE_NAMES.d1Database} -y`, { cwd: projectRoot });
+      },
     },
     {
       label: `KV namespace ${RESOURCE_NAMES.kvNamespace}`,
-      cmd: `wrangler kv namespace delete --binding ${BINDINGS.kv} -y`,
+      fn: () => {
+        if (!kvId) throw new ResourceNotFoundError('KV namespace not found');
+        exec(`wrangler kv namespace delete --namespace-id ${kvId}`, { cwd: projectRoot });
+      },
     },
     {
       label: `R2 bucket ${RESOURCE_NAMES.r2Bucket}`,
-      cmd: `wrangler r2 bucket delete ${RESOURCE_NAMES.r2Bucket}`,
+      fn: () => exec(`wrangler r2 bucket delete ${RESOURCE_NAMES.r2Bucket}`, { cwd: projectRoot }),
     },
   ];
 
@@ -97,22 +133,15 @@ export async function cleanup(options: CleanupOptions) {
   for (const step of steps) {
     s.start(`Deleting ${step.label}...`);
     if (dryRun) {
-      s.stop(`${brand.dim('○')} ${step.label} ${brand.dim(`(dry run: ${step.cmd})`)}`);
+      s.stop(`${brand.dim('○')} ${step.label} ${brand.dim('(dry run)')}`);
       continue;
     }
 
     try {
-      exec(step.cmd, { cwd: projectRoot });
+      step.fn();
       s.stop(`${brand.teal('✓')} ${step.label} deleted`);
     } catch (e) {
-      // Silently skip resources that don't exist
-      if (
-        errorContains(e, 'not found') ||
-        errorContains(e, 'does not exist') ||
-        errorContains(e, '10007') || // Worker not found
-        errorContains(e, '10006')
-      ) {
-        // Resource not found
+      if (e instanceof ResourceNotFoundError || isNotFound(e)) {
         s.stop(`${brand.teal('✓')} ${step.label} ${brand.dim('(not found, skipped)')}`);
         continue;
       }

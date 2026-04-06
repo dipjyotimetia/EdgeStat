@@ -204,11 +204,29 @@ export interface components {
         IngestResponse: {
             queued: number;
         };
-        ErrorResponse: {
-            error: string;
-            details?: {
-                [key: string]: unknown;
-            };
+        ValidationErrorResponse: {
+            /** @constant */
+            error: "validation_failed";
+            /** @constant */
+            status: 400;
+            issues: {
+                path: string;
+                message: string;
+                code: string;
+            }[];
+        };
+        NotFoundErrorResponse: {
+            /** @constant */
+            error: "not_found";
+            /** @constant */
+            status: 404;
+            resource?: string;
+        };
+        ServerErrorResponse: {
+            /** @constant */
+            error: "internal_server_error";
+            /** @constant */
+            status: 500;
         };
         ListSitesResponse: {
             sites: components["schemas"]["Site"][];
@@ -219,6 +237,12 @@ export interface components {
             domain: string;
             api_key: string;
             created_at: string;
+        };
+        UnauthorizedErrorResponse: {
+            /** @constant */
+            error: "unauthorized";
+            /** @constant */
+            status: 401;
         };
         CreateSiteResponse: {
             site: components["schemas"]["Site"];
@@ -266,7 +290,7 @@ export interface components {
             event_name: string;
             count: number;
             properties: {
-                [key: string]: unknown;
+                [key: string]: string | number;
             };
         };
         RealtimeResponse: {
@@ -329,16 +353,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
                 };
             };
-            /** @description Unknown site */
+            /** @description Not found */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "application/json": components["schemas"]["NotFoundErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
                 };
             };
         };
@@ -359,6 +392,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ListSitesResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
                 };
             };
         };
@@ -385,6 +436,33 @@ export interface operations {
                     "application/json": components["schemas"]["CreateSiteResponse"];
                 };
             };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
+                };
+            };
         };
     };
     getStats: {
@@ -408,6 +486,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
                 };
             };
         };
@@ -436,6 +541,24 @@ export interface operations {
                     "application/json": components["schemas"]["TimeseriesResponse"];
                 };
             };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
+                };
+            };
         };
     };
     getPages: {
@@ -462,6 +585,24 @@ export interface operations {
                     "application/json": components["schemas"]["PagesResponse"];
                 };
             };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
+                };
+            };
         };
     };
     getSources: {
@@ -485,6 +626,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SourcesResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
                 };
             };
         };
@@ -514,6 +673,24 @@ export interface operations {
                     "application/json": components["schemas"]["EventsResponse"];
                 };
             };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
+                };
+            };
         };
     };
     getRealtime: {
@@ -536,6 +713,24 @@ export interface operations {
                     "application/json": components["schemas"]["RealtimeResponse"];
                 };
             };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
+                };
+            };
         };
     };
     listFunnels: {
@@ -556,6 +751,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FunnelsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
                 };
             };
         };
@@ -582,6 +795,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CreateFunnelResponse"];
+                };
+            };
+            /** @description Validation error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServerErrorResponse"];
                 };
             };
         };

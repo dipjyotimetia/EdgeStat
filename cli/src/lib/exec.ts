@@ -16,6 +16,13 @@ export class ExecError extends Error {
   }
 }
 
+export class ResourceNotFoundError extends ExecError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ResourceNotFoundError';
+  }
+}
+
 export function exec(command: string, opts: ExecOptions = {}): string {
   try {
     return execSync(command, {

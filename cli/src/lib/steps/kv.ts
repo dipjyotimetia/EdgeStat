@@ -4,6 +4,17 @@ import type { StepResult } from '../types.js';
 
 const KV_NAME = RESOURCE_NAMES.kvNamespace;
 
+export function lookupKV(title: string, cwd: string): string | undefined {
+  try {
+    const out = exec('wrangler kv namespace list', { cwd });
+    const namespaces = safeJsonParse<{ id: string; title: string }[]>(out);
+    // wrangler v4 title = "KV"; wrangler v3 title = "edgestat-KV"
+    return namespaces.find((n) => n.title === title || n.title === `edgestat-${title}`)?.id;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function createKV(projectRoot: string, dryRun: boolean): Promise<StepResult> {
   if (dryRun) return { status: 'skipped', id: 'dry-run' };
 
@@ -33,11 +44,8 @@ export async function createKV(projectRoot: string, dryRun: boolean): Promise<St
       const idMatch = String(e).match(/([a-f0-9]{32})/);
       if (idMatch) return { status: 'skipped', id: idMatch[1] };
 
-      // wrangler v4 title = "KV"; wrangler v3 title = "edgestat-KV"
-      const listOutput = exec('wrangler kv namespace list', { cwd: projectRoot });
-      const namespaces = safeJsonParse<{ id: string; title: string }[]>(listOutput);
-      const ns = namespaces.find((n) => n.title === KV_NAME || n.title === `edgestat-${KV_NAME}`);
-      if (ns) return { status: 'skipped', id: ns.id };
+      const id = lookupKV(KV_NAME, projectRoot);
+      if (id) return { status: 'skipped', id };
     }
     throw e;
   }

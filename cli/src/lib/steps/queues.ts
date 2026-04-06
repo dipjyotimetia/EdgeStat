@@ -11,7 +11,7 @@ export async function createQueues(projectRoot: string, dryRun: boolean): Promis
       exec(`wrangler queues create ${name}`, { cwd: projectRoot });
       allSkipped = false;
     } catch (e) {
-      if (!errorContains(e, 'already exists')) throw e;
+      if (!errorContains(e, 'already exists') && !errorContains(e, 'already taken')) throw e;
     }
   }
   return { status: allSkipped ? 'skipped' : 'created' };

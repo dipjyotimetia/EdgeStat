@@ -42,7 +42,12 @@
       "Bash(chmod +x /Users/dipjyotimetia/Documents/working/ccviews/analytics-engine/.husky/pre-commit)",
       "Bash(npx prettier:*)",
       "Bash(npx turbo:*)",
-      "Bash(npm --version)"
+      "Bash(npm --version)",
+      "Bash(rg -r \"secret|password|api.key|token|credential\" --type ts -i -l)",
+      "Bash(git:*)",
+      "Bash(tsx ../../scripts/generate-openapi.ts)",
+      "Bash(wrangler queues:*)",
+      "Bash(echo \"EXIT: $?\")"
     ]
   }
 }

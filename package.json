@@ -23,6 +23,7 @@
     "types": "wrangler types",
     "typecheck": "turbo run typecheck",
     "setup": "npm run build --workspace cli && node cli/dist/index.js setup",
+    "cleanup": "npm run build --workspace cli && node cli/dist/index.js cleanup",
     "prepare": "husky",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

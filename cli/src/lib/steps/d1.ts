@@ -4,6 +4,16 @@ import type { StepResult } from '../types.js';
 
 const DB_NAME = RESOURCE_NAMES.d1Database;
 
+export function lookupD1(dbName: string, cwd: string): string | undefined {
+  try {
+    const out = exec('wrangler d1 list --json', { cwd });
+    const databases = safeJsonParse<{ uuid: string; name: string }[]>(out);
+    return databases.find((d) => d.name === dbName)?.uuid;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function createD1(projectRoot: string, dryRun: boolean): Promise<StepResult> {
   if (dryRun) return { status: 'skipped', id: 'dry-run' };
 
@@ -34,10 +44,8 @@ export async function createD1(projectRoot: string, dryRun: boolean): Promise<St
       const idFromError = extractUuidFromError(e);
       if (idFromError) return { status: 'skipped', id: idFromError };
 
-      const listOutput = exec('wrangler d1 list --json', { cwd: projectRoot });
-      const databases = safeJsonParse<{ uuid: string; name: string }[]>(listOutput);
-      const db = databases.find((d) => d.name === DB_NAME);
-      if (db) return { status: 'skipped', id: db.uuid };
+      const id = lookupD1(DB_NAME, projectRoot);
+      if (id) return { status: 'skipped', id };
     }
     throw e;
   }
