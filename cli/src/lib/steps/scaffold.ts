@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { exec } from '../exec.js';
 import { findProjectRoot, generateWranglerConfig, type WranglerConfigMode } from '../config.js';
 import { GITHUB } from '../constants.js';
+import { log } from '../colors.js';
 
 export type ScaffoldMode = 'existing' | WranglerConfigMode;
 
@@ -28,8 +29,8 @@ export async function scaffold(cwd: string, dryRun: boolean): Promise<ScaffoldRe
   const mode: WranglerConfigMode = isProject ? 'project' : 'standalone';
 
   if (dryRun) {
-    console.log(
-      `[dry-run] Would generate wrangler.jsonc (${mode} mode)${
+    log.info(
+      `Would generate wrangler.jsonc (${mode} mode)${
         mode === 'standalone' ? ' after downloading latest GitHub release' : ''
       }`
     );

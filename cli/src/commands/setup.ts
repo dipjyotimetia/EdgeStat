@@ -1,7 +1,7 @@
 import { intro, outro, spinner, note, confirm, text, cancel, isCancel } from '@clack/prompts';
 import { brand, log } from '../lib/colors.js';
 import { patchWranglerConfigBatch, isAlreadyPatched } from '../lib/config.js';
-import { scaffold, type ScaffoldMode } from '../lib/steps/scaffold.js';
+import { scaffold } from '../lib/steps/scaffold.js';
 import { RESOURCE_NAMES } from '../lib/constants.js';
 import { checkPrerequisites } from '../lib/steps/prerequisites.js';
 import { createD1 } from '../lib/steps/d1.js';
@@ -51,14 +51,11 @@ export async function setup(options: SetupOptions) {
   const s = spinner();
 
   s.start('Checking project setup...');
-  let scaffoldResult: { mode: ScaffoldMode; projectRoot: string };
-  try {
-    scaffoldResult = await scaffold(process.cwd(), dryRun);
-  } catch (e) {
+  const scaffoldResult = await scaffold(process.cwd(), dryRun).catch((e) => {
     s.stop(`${brand.red('✗')} Project setup failed`);
     log.error((e as Error).message);
     process.exit(1);
-  }
+  });
   const { mode, projectRoot } = scaffoldResult;
 
   if (mode === 'existing') {
