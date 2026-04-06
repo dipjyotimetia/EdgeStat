@@ -14,3 +14,9 @@ export const BINDINGS = {
   r2: 'R2',
   queue: 'EVENTS_QUEUE',
 } as const;
+
+export const GITHUB = {
+  owner: 'dipjyotimetia',
+  repo: 'EdgeStat',
+  releaseAsset: 'edgestat-release.tar.gz',
+} as const;
