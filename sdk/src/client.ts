@@ -1,7 +1,7 @@
 // EdgeStat TypeScript SDK for server-side and mobile usage
 
-export type { EventPayload, VitalName, EventType } from '@edgestat/schemas/types';
-import type { EventPayload } from '@edgestat/schemas/types';
+import type { EventPayload, VitalName, EventType } from '@edgestat/schemas/types';
+export type { EventPayload, VitalName, EventType };
 
 export interface EdgeStatConfig {
   endpoint: string;
@@ -63,7 +63,6 @@ export class EdgeStatClient {
       });
 
       if (!res.ok) {
-        // Re-queue failed events
         this.queue.unshift(...events);
         console.error(`EdgeStat: Failed to send events (${res.status})`);
       }

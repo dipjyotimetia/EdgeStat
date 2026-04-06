@@ -1,6 +1,6 @@
 import type { Env } from '../lib/types.js';
 import { requireMasterKey } from '../lib/auth.js';
-import { jsonResponse, errorResponse } from '../lib/response.js';
+import { jsonResponse, validationErrorResponse, invalidJsonBodyResponse } from '../lib/response.js';
 import { defaultDateRange } from '../lib/utils.js';
 import { generateShortId } from '../lib/utils.js';
 import {
@@ -44,10 +44,10 @@ export async function handleStats(request: IRequest, env: Env): Promise<Response
 
   const siteId = getSiteId(request);
   const query = getQuery(request);
-  const parsed = dateRangeSchema.safeParse(query.from && query.to ? query : defaultDateRange());
-  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid date range', code: 'invalid_type' }] });
+  const result = toParseResult(dateRangeSchema.safeParse(query.from && query.to ? query : defaultDateRange()));
+  if (!result.success) return validationErrorResponse(result.issues);
 
-  const stats: StatsResponse = await getOverviewStats(env.DB, siteId, parsed.data.from, parsed.data.to);
+  const stats: StatsResponse = await getOverviewStats(env.DB, siteId, result.data.from, result.data.to);
   return jsonResponse(stats);
 }
 
@@ -57,10 +57,10 @@ export async function handleTimeseries(request: IRequest, env: Env): Promise<Res
 
   const siteId = getSiteId(request);
   const query = getQuery(request);
-  const parsed = timeseriesQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), interval: 'day' });
-  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid query parameters', code: 'invalid_type' }] });
+  const result = toParseResult(timeseriesQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), interval: 'day' }));
+  if (!result.success) return validationErrorResponse(result.issues);
 
-  const data = await getTimeseries(env.DB, siteId, parsed.data.from, parsed.data.to, parsed.data.interval);
+  const data = await getTimeseries(env.DB, siteId, result.data.from, result.data.to, result.data.interval);
   return jsonResponse<TimeseriesResponse>({ data });
 }
 
@@ -70,10 +70,10 @@ export async function handlePages(request: IRequest, env: Env): Promise<Response
 
   const siteId = getSiteId(request);
   const query = getQuery(request);
-  const parsed = pagesQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), limit: '10' });
-  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid query parameters', code: 'invalid_type' }] });
+  const result = toParseResult(pagesQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), limit: '10' }));
+  if (!result.success) return validationErrorResponse(result.issues);
 
-  const pages = await getTopPages(env.DB, siteId, parsed.data.from, parsed.data.to, parsed.data.limit);
+  const pages = await getTopPages(env.DB, siteId, result.data.from, result.data.to, result.data.limit);
   return jsonResponse<PagesResponse>({ pages });
 }
 
@@ -83,10 +83,10 @@ export async function handleSources(request: IRequest, env: Env): Promise<Respon
 
   const siteId = getSiteId(request);
   const query = getQuery(request);
-  const parsed = dateRangeSchema.safeParse(query.from && query.to ? query : defaultDateRange());
-  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid date range', code: 'invalid_type' }] });
+  const result = toParseResult(dateRangeSchema.safeParse(query.from && query.to ? query : defaultDateRange()));
+  if (!result.success) return validationErrorResponse(result.issues);
 
-  const sources: SourcesResponse = await getTrafficSources(env.DB, siteId, parsed.data.from, parsed.data.to);
+  const sources: SourcesResponse = await getTrafficSources(env.DB, siteId, result.data.from, result.data.to);
   return jsonResponse(sources);
 }
 
@@ -96,11 +96,11 @@ export async function handleEvents(request: IRequest, env: Env): Promise<Respons
 
   const siteId = getSiteId(request);
   const query = getQuery(request);
-  const parsed = eventsQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), limit: '50' });
-  if (!parsed.success) return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid query parameters', code: 'invalid_type' }] });
+  const result = toParseResult(eventsQuerySchema.safeParse(query.from && query.to ? query : { ...defaultDateRange(), limit: '50' }));
+  if (!result.success) return validationErrorResponse(result.issues);
 
   const events: EventsResponse = await getCustomEvents(
-    env.DB, siteId, parsed.data.from, parsed.data.to, parsed.data.name, parsed.data.limit,
+    env.DB, siteId, result.data.from, result.data.to, result.data.name, result.data.limit,
   );
   return jsonResponse(events);
 }
@@ -145,17 +145,11 @@ export async function handleCreateFunnel(request: IRequest, env: Env): Promise<R
   try {
     body = await (request as unknown as Request).json();
   } catch {
-    return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid JSON body', code: 'invalid_type' }] });
+    return invalidJsonBodyResponse();
   }
 
   const result = toParseResult(createFunnelSchema.safeParse(body));
-  if (!result.success) {
-    return errorResponse({
-      error: 'validation_failed',
-      status: 400,
-      issues: result.issues.map((i) => ({ path: i.path.join('.'), message: i.message, code: i.code })),
-    });
-  }
+  if (!result.success) return validationErrorResponse(result.issues);
 
   const { name, steps } = result.data;
   const id = generateShortId();

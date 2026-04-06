@@ -3,7 +3,7 @@ import { ingestBodySchema, toParseResult } from '@edgestat/schemas';
 import { generateSessionId, getCurrentSalt } from '../lib/privacy.js';
 import { parseUserAgent } from '../lib/ua-parser.js';
 import { validateSiteApiKey } from '../lib/auth.js';
-import { jsonResponse, errorResponse } from '../lib/response.js';
+import { jsonResponse, errorResponse, validationErrorResponse, invalidJsonBodyResponse } from '../lib/response.js';
 
 export async function handleIngestOptions(): Promise<Response> {
   return new Response(null, { status: 204 });
@@ -14,17 +14,11 @@ export async function handleIngest(request: Request, env: Env): Promise<Response
   try {
     body = await request.json();
   } catch {
-    return errorResponse({ error: 'validation_failed', status: 400, issues: [{ path: '', message: 'Invalid JSON body', code: 'invalid_type' }] });
+    return invalidJsonBodyResponse();
   }
 
   const result = toParseResult(ingestBodySchema.safeParse(body));
-  if (!result.success) {
-    return errorResponse({
-      error: 'validation_failed',
-      status: 400,
-      issues: result.issues.map((i) => ({ path: i.path.join('.'), message: i.message, code: i.code })),
-    });
-  }
+  if (!result.success) return validationErrorResponse(result.issues);
 
   const { site_id, events } = result.data;
 

@@ -38,7 +38,7 @@ export { VITAL_NAMES, EVENT_TYPES, INTERVALS } from '@edgestat/schemas/types';
 function unwrap<T>(result: { data?: T; error?: ApiErrorResponse; response: Response }): T {
   if (result.error || !result.data) {
     const err = result.error;
-    if (err) throw err;
+    if (err) throw Object.assign(new Error(err.error), err);
     throw new Error(`HTTP ${result.response.status}`);
   }
   return result.data;

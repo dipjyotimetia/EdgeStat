@@ -299,8 +299,7 @@ const std500 = { description: 'Server error', content: { 'application/json': { s
 const std400 = { description: 'Validation error', content: { 'application/json': { schema: validationErrorSchema } } } as const;
 const std404 = { description: 'Not found', content: { 'application/json': { schema: notFoundErrorSchema } } } as const;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const openApiDocument: any = createDocument({
+export const openApiDocument: ReturnType<typeof createDocument> = createDocument({
   openapi: '3.1.0',
   info: {
     title:       'EdgeStat API',
