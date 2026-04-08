@@ -47,7 +47,9 @@
       "Bash(git:*)",
       "Bash(tsx ../../scripts/generate-openapi.ts)",
       "Bash(wrangler queues:*)",
-      "Bash(echo \"EXIT: $?\")"
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(gh run:*)",
+      "Read(//dev/**)"
     ]
   }
 }
