@@ -33,9 +33,6 @@ jobs:
             -e 's|<YOUR_KV_NAMESPACE_ID>|${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}|g' \
             wrangler.example.jsonc > wrangler.jsonc
 
-      - name: Build schemas
-        run: npm run build --workspace packages/schemas
-
       - name: Build dashboard and SDK
         run: npx turbo run build --filter=edgestat-dashboard --filter=edgestat-sdk
 

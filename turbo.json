@@ -4,13 +4,13 @@
   "tasks": {
     "generate:openapi": {
       "dependsOn": ["^build"],
-      "inputs": ["../src/lib/schemas.ts", "../scripts/generate-openapi.ts"],
+      "inputs": ["../packages/schemas/src/**", "../scripts/generate-openapi.ts"],
       "outputs": ["src/api/openapi.json", "src/api/schema.d.ts"],
       "cache": true
     },
     "build": {
       "dependsOn": ["generate:openapi", "^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
     "typecheck": {
       "dependsOn": ["^build"]

@@ -49,7 +49,9 @@
       "Bash(wrangler queues:*)",
       "Bash(echo \"EXIT: $?\")",
       "Bash(gh run:*)",
-      "Read(//dev/**)"
+      "Read(//dev/**)",
+      "Bash(grep -A 100 \"available via \\\\`npm run\\\\`\")",
+      "Bash(gh api:*)"
     ]
   }
 }
